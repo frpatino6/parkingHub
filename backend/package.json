@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/main.ts",
+    "dev": "..\\scripts\\use-node20.cmd tsx watch src/main.ts",
+    "seed": "..\\scripts\\use-node20.cmd tsx src/scripts/seed.ts",
     "build": "tsc",
     "start": "node dist/main.js",
     "test": "jest"
