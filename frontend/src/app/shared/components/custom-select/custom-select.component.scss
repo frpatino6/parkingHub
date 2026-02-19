@@ -1,0 +1,128 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/typography' as *;
+
+.custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.select-trigger {
+  width: 100%;
+  padding: $space-3 $space-4;
+  background: rgba($neutral-900, 0.3);
+  border: 1px solid rgba($neutral-600, 0.5);
+  border-radius: $radius-lg;
+  color: $neutral-100;
+  font-family: $font-primary;
+  font-size: $text-sm;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+  cursor: pointer;
+  text-align: left;
+  appearance: none;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    border-color: rgba($neutral-500, 0.6);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    background: rgba($neutral-900, 0.5);
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.2);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &.open {
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.2);
+  }
+}
+
+.trigger-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trigger-icon {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  color: $neutral-400;
+  transition: transform 0.2s $ease-out-expo;
+
+  .select-trigger.open & {
+    transform: rotate(180deg);
+  }
+}
+
+.select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  margin: 0;
+  padding: $space-1;
+  list-style: none;
+  background: $surface-dark-card;
+  border: 1px solid rgba($neutral-600, 0.5);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-xl;
+  max-height: 240px;
+  overflow-y: auto;
+  animation: dropdownEnter 0.2s $ease-out-expo;
+}
+
+@keyframes dropdownEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .select-dropdown {
+    animation: none;
+  }
+}
+
+.select-option {
+  padding: $space-3 $space-4;
+  font-size: $text-sm;
+  color: $neutral-100;
+  cursor: pointer;
+  border-radius: $radius-md;
+  transition: background 0.15s ease, color 0.15s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background: rgba($primary-500, 0.15);
+    color: $neutral-50;
+  }
+
+  &.selected {
+    background: rgba($primary-500, 0.25);
+    color: $primary-300;
+    font-weight: $font-semibold;
+  }
+
+  &.selected:hover {
+    background: rgba($primary-500, 0.35);
+    color: $primary-200;
+  }
+}

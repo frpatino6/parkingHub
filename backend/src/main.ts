@@ -22,6 +22,7 @@ import { MongoTicketRepository } from './infrastructure/database/repositories/Mo
 import { MongoCashCutRepository } from './infrastructure/database/repositories/MongoCashCut.Repository.js';
 import { MongoAuditLogRepository } from './infrastructure/database/repositories/MongoAuditLog.Repository.js';
 import { MongoPricingConfigRepository } from './infrastructure/database/repositories/MongoPricingConfig.Repository.js';
+import { MongoFinancialMovementRepository } from './infrastructure/database/repositories/MongoFinancialMovement.Repository.js';
 
 // ─── Application: Use Cases ───────────────────────────────────────────────────
 import { LoginUseCase } from './application/use-cases/auth/Login.UseCase.js';
@@ -34,9 +35,18 @@ import { GetTicketsByPlateUseCase } from './application/use-cases/ticket/GetTick
 import { OpenCashCutUseCase } from './application/use-cases/cash-cut/OpenCashCut.UseCase.js';
 import { CloseCashCutUseCase } from './application/use-cases/cash-cut/CloseCashCut.UseCase.js';
 import { GetCurrentCashCutUseCase } from './application/use-cases/cash-cut/GetCurrentCashCut.UseCase.js';
+import { CreateFinancialMovementUseCase } from './application/use-cases/cash-cut/CreateFinancialMovement.UseCase.js';
+import { GetFinancialMovementsUseCase } from './application/use-cases/cash-cut/GetFinancialMovements.UseCase.js';
+import { GetMovementsReportUseCase } from './application/use-cases/financial/GetMovementsReport.UseCase.js';
 import { CreateUserUseCase } from './application/use-cases/user/CreateUser.UseCase.js';
+import { GetUsersUseCase } from './application/use-cases/user/GetUsers.UseCase.js';
+import { UpdateUserUseCase } from './application/use-cases/user/UpdateUser.UseCase.js';
+import { ResetPasswordUseCase } from './application/use-cases/user/ResetPassword.UseCase.js';
 import { CreateBranchUseCase } from './application/use-cases/branch/CreateBranch.UseCase.js';
+import { GetBranchesByTenantUseCase } from './application/use-cases/branch/GetBranchesByTenant.UseCase.js';
 import { CreatePricingConfigUseCase } from './application/use-cases/pricing/CreatePricingConfig.UseCase.js';
+import { GetPricingConfigsUseCase } from './application/use-cases/pricing/GetPricingConfigs.UseCase.js';
+import { UpdatePricingConfigUseCase } from './application/use-cases/pricing/UpdatePricingConfig.UseCase.js';
 
 // ─── Infrastructure: HTTP ─────────────────────────────────────────────────────
 import { authMiddleware, requireRole } from './infrastructure/http/middlewares/auth.middleware.js';
@@ -72,6 +82,7 @@ async function bootstrap(): Promise<void> {
   const cashCutRepo = new MongoCashCutRepository();
   const auditLogRepo = new MongoAuditLogRepository();
   const pricingConfigRepo = new MongoPricingConfigRepository();
+  const movementRepo = new MongoFinancialMovementRepository();
 
   // ── Use Cases ─────────────────────────────────────────────────────────────
   const loginUseCase = new LoginUseCase(userRepo, hashingService, tokenService);
@@ -90,9 +101,18 @@ async function bootstrap(): Promise<void> {
   const openCashCutUseCase = new OpenCashCutUseCase(cashCutRepo, auditLogRepo);
   const closeCashCutUseCase = new CloseCashCutUseCase(cashCutRepo, auditLogRepo);
   const getCurrentCashCutUseCase = new GetCurrentCashCutUseCase(cashCutRepo);
+  const createMovementUseCase = new CreateFinancialMovementUseCase(movementRepo, cashCutRepo, auditLogRepo);
+  const getMovementsUseCase = new GetFinancialMovementsUseCase(movementRepo);
+  const getMovementsReportUseCase = new GetMovementsReportUseCase(movementRepo);
   const createUserUseCase = new CreateUserUseCase(userRepo, auditLogRepo, hashingService);
+  const getUsersUseCase = new GetUsersUseCase(userRepo);
+  const updateUserUseCase = new UpdateUserUseCase(userRepo, auditLogRepo);
+  const resetPasswordUseCase = new ResetPasswordUseCase(userRepo, auditLogRepo, hashingService);
   const createBranchUseCase = new CreateBranchUseCase(branchRepo, auditLogRepo);
+  const getBranchesByTenantUseCase = new GetBranchesByTenantUseCase(branchRepo);
   const createPricingConfigUseCase = new CreatePricingConfigUseCase(pricingConfigRepo, auditLogRepo);
+  const getPricingConfigsUseCase = new GetPricingConfigsUseCase(pricingConfigRepo);
+  const updatePricingConfigUseCase = new UpdatePricingConfigUseCase(pricingConfigRepo);
 
   // ── Controllers ───────────────────────────────────────────────────────────
   const authController = new AuthController(loginUseCase);
@@ -109,10 +129,22 @@ async function bootstrap(): Promise<void> {
     openCashCutUseCase,
     closeCashCutUseCase,
     getCurrentCashCutUseCase,
+    createMovementUseCase,
+    getMovementsUseCase,
+    getMovementsReportUseCase,
   );
-  const userController = new UserController(createUserUseCase);
-  const branchController = new BranchController(createBranchUseCase);
-  const pricingConfigController = new PricingConfigController(createPricingConfigUseCase);
+  const userController = new UserController(
+    createUserUseCase,
+    getUsersUseCase,
+    updateUserUseCase,
+    resetPasswordUseCase,
+  );
+  const branchController = new BranchController(createBranchUseCase, getBranchesByTenantUseCase);
+  const pricingConfigController = new PricingConfigController(
+    createPricingConfigUseCase,
+    getPricingConfigsUseCase,
+    updatePricingConfigUseCase
+  );
 
   // ── Middleware ────────────────────────────────────────────────────────────
   const authenticate = authMiddleware(tokenService);

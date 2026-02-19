@@ -1,0 +1,144 @@
+<div class="users-container">
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Gestión de Usuarios</h1>
+      <p class="subtitle">Administre el personal, roles y acceso a sedes</p>
+    </div>
+    <button class="btn btn--primary" (click)="openCreateModal()">
+      <span class="material-icons">person_add</span>
+      <span>Nuevo Usuario</span>
+    </button>
+  </header>
+
+  <main class="content-area">
+    @if (loading()) {
+      <div class="state-container loading">
+        <div class="spinner"></div>
+        <p>Cargando usuarios...</p>
+      </div>
+    } @else if (error()) {
+      <div class="state-container error">
+        <span class="material-icons icon">error_outline</span>
+        <h3>Ocurrió un error</h3>
+        <p>{{ error() }}</p>
+        <button class="btn btn--ghost" (click)="loadUsers()">Reintentar</button>
+      </div>
+    } @else {
+      <div class="glass-card table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Rol</th>
+              <th>Sede</th>
+              <th>Estado</th>
+              <th class="actions-col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users(); track user.id) {
+              <tr class="table-row">
+                <td class="col-user">
+                  <div class="user-info">
+                    <div class="avatar">{{ user.name.charAt(0).toUpperCase() }}</div>
+                    <div class="details">
+                      <span class="name">{{ user.name }}</span>
+                      <span class="email">{{ user.email }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="role-badge" [class]="user.role.toLowerCase()">
+                    {{ user.role }}
+                  </span>
+                </td>
+                <td>
+                  <span class="branch-text">
+                    {{ getBranchName(user.branchId) }}
+                  </span>
+                </td>
+                <td>
+                  <span class="status-indicator" [class.active]="user.active" [class.inactive]="!user.active">
+                    {{ user.active ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="col-actions">
+                  <div class="actions-cell">
+                    <button class="btn btn--sm btn--ghost" (click)="openEditModal(user)" title="Editar">
+                      <span class="material-icons">edit</span>
+                    </button>
+                    <button class="btn btn--sm btn--ghost" [class.btn-danger]="user.active" (click)="toggleActive(user)" 
+                            [title]="user.active ? 'Desactivar' : 'Activar'">
+                      <span class="material-icons">{{ user.active ? 'person_off' : 'person_outline' }}</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </main>
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content glass-card" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+          <h2>{{ isEditing() ? 'Editar Usuario' : 'Nuevo Usuario' }}</h2>
+          <button class="btn-close" (click)="closeModal()">
+            <span class="material-icons">close</span>
+          </button>
+        </header>
+
+        <form class="user-form" (ngSubmit)="save()">
+          <div class="form-group">
+            <label>Nombre Completo</label>
+            <input type="text" name="name" [(ngModel)]="form.name" required class="form-input" placeholder="Ej: Juan Pérez">
+          </div>
+
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" name="email" [(ngModel)]="form.email" required class="form-input"
+                   [disabled]="isEditing()" placeholder="ejemplo@correo.com">
+          </div>
+
+          @if (!isEditing()) {
+            <div class="form-group">
+              <label>Contraseña</label>
+              <input type="password" name="password" [(ngModel)]="form.password" required class="form-input" placeholder="Mínimo 8 caracteres">
+            </div>
+          }
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Rol</label>
+              <app-custom-select
+                [options]="roleOptions"
+                [(ngModel)]="form.role"
+                name="role"
+              ></app-custom-select>
+            </div>
+
+            <div class="form-group">
+              <label>Sede</label>
+              <app-custom-select
+                [options]="branchOptions()"
+                [(ngModel)]="form.branchId"
+                name="branchId"
+              ></app-custom-select>
+            </div>
+          </div>
+
+          <footer class="form-actions">
+            <button type="button" class="btn btn--ghost" (click)="closeModal()">Cancelar</button>
+            <button type="submit" class="btn btn--primary">
+              {{ isEditing() ? 'Guardar Cambios' : 'Crear Usuario' }}
+            </button>
+          </footer>
+        </form>
+      </div>
+    </div>
+  }
+</div>

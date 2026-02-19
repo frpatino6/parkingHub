@@ -25,6 +25,8 @@ export class MainLayoutComponent {
       { label: 'Salidas', route: '/check-out', icon: 'logout', roles: ['OPERATOR'] },
       { label: 'Inventario', route: '/inventory', icon: 'directions_car', roles: ['OPERATOR', 'PARKING_ADMIN'] },
       { label: 'Historial', route: '/history', icon: 'history', roles: ['OPERATOR', 'PARKING_ADMIN', 'SUPER_ADMIN'] },
+      { label: 'Usuarios', route: '/users', icon: 'people', roles: ['PARKING_ADMIN', 'SUPER_ADMIN'] },
+      { label: 'Tarifas', route: '/pricing', icon: 'payments', roles: ['PARKING_ADMIN', 'SUPER_ADMIN'] },
       { label: 'Cierre de Caja', route: '/cash-cut', icon: 'account_balance_wallet', roles: ['OPERATOR', 'PARKING_ADMIN', 'SUPER_ADMIN'] },
     ];
     return allItems.filter(item => !item.roles || (userRole && item.roles.includes(userRole)));

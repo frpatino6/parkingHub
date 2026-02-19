@@ -1,0 +1,88 @@
+@use '../../../../../styles/variables' as *;
+@use '../../../../../styles/typography' as *;
+
+.financial-report {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+.report-filters {
+  padding: $space-4 $space-6;
+  display: flex;
+  align-items: flex-end;
+  gap: $space-6;
+  flex-wrap: wrap;
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+
+    label { font-size: $text-xs; font-weight: $font-bold; color: $neutral-500; text-transform: uppercase; }
+  }
+
+  .form-input {
+    background: rgba($neutral-900, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: $space-2 $space-4;
+    border-radius: $radius-lg;
+    font-size: $text-sm;
+    &:focus { border-color: $primary-500; outline: none; }
+  }
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-4;
+
+  .summary-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: $space-4 $space-6;
+    border-radius: $radius-xl;
+    display: flex;
+    flex-direction: column;
+
+    .label { font-size: $text-xs; color: $neutral-400; text-transform: uppercase; margin-bottom: $space-1; }
+    .value { font-size: $text-2xl; font-weight: $font-bold; color: white; }
+
+    &.income .value { color: $accent-400; }
+    &.expense .value { color: $error-400; }
+    &.balance.negative .value { color: $error-400; }
+  }
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th { 
+    text-align: left; padding: $space-4; font-size: $text-xs; 
+    color: $neutral-500; text-transform: uppercase; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  td { padding: $space-4; color: $neutral-200; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: $text-sm; }
+
+  .col-date { white-space: nowrap; color: $neutral-400; }
+  .col-desc { max-width: 300px; }
+  .col-amount { font-weight: $font-bold; text-align: right; color: $accent-400; &.expense { color: $error-400; } }
+
+  .type-badge {
+    padding: 2px 8px; border-radius: $radius-full; font-size: $text-xs;
+    &.income { background: rgba($accent-500, 0.1); color: $accent-400; }
+    &.expense { background: rgba($error-500, 0.1); color: $error-400; }
+  }
+}
+
+.state-placeholder {
+  text-align: center; padding: $space-12; color: $neutral-500;
+  .material-icons { font-size: 48px; opacity: 0.3; margin-bottom: $space-4; }
+}
+
+@media (max-width: 768px) {
+  .summary-cards { grid-template-columns: 1fr; }
+  .report-filters { flex-direction: column; align-items: stretch; }
+}

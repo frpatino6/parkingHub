@@ -38,7 +38,13 @@ export class MongoUserRepository implements UserRepository {
   async update(user: User): Promise<User> {
     const doc = await UserModel.findByIdAndUpdate(
       user.id,
-      { name: user.name, active: user.active, branchId: user.branchId },
+      { 
+        name: user.name, 
+        active: user.active, 
+        branchId: user.branchId,
+        role: user.role,
+        passwordHash: user.passwordHash 
+      },
       { new: true },
     );
     if (!doc) throw new Error(`User ${user.id} not found for update`);

@@ -12,6 +12,8 @@ interface ICashCutDoc {
   totalSalesCOP: number;
   totalCashCOP: number;
   totalElectronicCOP: number;
+  totalManualCreditsCOP: number;
+  totalManualDebitsCOP: number;
   /** Cash reported by operator at close (integer COP) */
   reportedCashCOP?: number;
   /** Signed: reportedCash - totalSales; positive = surplus, negative = deficit */
@@ -36,6 +38,8 @@ const cashCutSchema = new Schema<ICashCutDoc>(
     totalSalesCOP: { type: Number, required: true, default: 0 },
     totalCashCOP: { type: Number, required: true, default: 0 },
     totalElectronicCOP: { type: Number, required: true, default: 0 },
+    totalManualCreditsCOP: { type: Number, required: true, default: 0 },
+    totalManualDebitsCOP: { type: Number, required: true, default: 0 },
     reportedCashCOP: { type: Number },
     discrepancyCOP: { type: Number },
   },

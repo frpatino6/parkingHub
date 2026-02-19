@@ -40,6 +40,16 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/history/presentation/History.Page.Component').then((m) => m.HistoryPageComponent),
       },
+      {
+        path: 'users',
+        loadComponent: () =>
+          import('./features/users/presentation/Users.Page.Component').then((m) => m.UsersPageComponent),
+      },
+      {
+        path: 'pricing',
+        loadChildren: () =>
+          import('./features/pricing/Pricing.routes').then((m) => m.PRICING_ROUTES),
+      },
     ],
   },
   { path: '**', redirectTo: 'login' },

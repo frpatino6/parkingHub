@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/infrastructure/auth/Auth.Service';
+import { extractApiError } from '../../../shared/utils/api-error.util';
+import { FinancialReportComponent } from './reports/FinancialReport.Component';
 
 interface Ticket {
   id: string;
@@ -20,7 +22,7 @@ interface Ticket {
 @Component({
   selector: 'app-history-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FinancialReportComponent],
   templateUrl: './History.Page.Component.html',
   styleUrl: './History.Page.Component.scss',
   encapsulation: ViewEncapsulation.None
@@ -32,6 +34,7 @@ export class HistoryPageComponent implements OnInit {
   tickets = signal<Ticket[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+  activeTab = signal<'tickets' | 'financial'>('tickets');
 
   // Search
   searchPlate = signal('');
@@ -59,8 +62,7 @@ export class HistoryPageComponent implements OnInit {
           this.loading.set(false);
         },
         error: (err) => {
-          console.error(err);
-          this.error.set('No se pudo cargar el historial.');
+          this.error.set(extractApiError(err, 'No se pudo cargar el historial.'));
           this.loading.set(false);
         }
       });

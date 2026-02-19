@@ -85,7 +85,7 @@
                 <span class="breakdown-value">{{ (item.totalCashCOP || 0) | currency:'COP':'$':'1.0-0' }}</span>
               </div>
             </div>
-            <div class="breakdown-item">
+            <div class="breakdown-item electronic">
               <div class="breakdown-icon electronic">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
               </div>
@@ -94,9 +94,56 @@
                 <span class="breakdown-value">{{ (item.totalElectronicCOP || 0) | currency:'COP':'$':'1.0-0' }}</span>
               </div>
             </div>
+            <div class="breakdown-item income">
+              <div class="breakdown-icon income">
+                <span class="material-icons">add_circle_outline</span>
+              </div>
+              <div class="breakdown-info">
+                <span class="breakdown-label">Ingresos del Turno</span>
+                <span class="breakdown-value">{{ (item.totalManualCreditsCOP || 0) | currency:'COP':'$':'1.0-0' }}</span>
+              </div>
+            </div>
+            <div class="breakdown-item expense">
+              <div class="breakdown-icon expense">
+                <span class="material-icons">remove_circle_outline</span>
+              </div>
+              <div class="breakdown-info">
+                <span class="breakdown-label">Egresos del Turno</span>
+                <span class="breakdown-value">{{ (item.totalManualDebitsCOP || 0) | currency:'COP':'$':'1.0-0' }}</span>
+              </div>
+            </div>
           </div>
 
           <div class="divider"></div>
+
+          <!-- Quick Actions -->
+          <div class="quick-actions">
+            <button type="button" class="btn btn--outline btn--full" (click)="showMovementModal.set(true)">
+              <span class="material-icons">payments</span>
+              Registrar Salida/Ingreso Manual
+            </button>
+          </div>
+
+          <!-- Recent Movements -->
+          @if (movements().length > 0) {
+            <div class="recent-movements">
+              <h3 class="section-title">Movimientos Recientes</h3>
+              <div class="movements-list">
+                @for (m of movements(); track m.id) {
+                  <div class="movement-item" [class.is-expense]="m.type === 'EXPENSE'">
+                    <div class="m-info">
+                      <span class="m-desc">{{ m.description }}</span>
+                      <span class="m-cat">{{ m.category }} • {{ formatDate(m.createdAt) }}</span>
+                    </div>
+                    <span class="m-amount">
+                      {{ m.type === 'EXPENSE' ? '-' : '+' }}
+                      {{ m.amountCOP | currency:'COP':'$':'1.0-0' }}
+                    </span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
 
           <!-- Close form -->
           <form class="close-form" [formGroup]="closeForm" (ngSubmit)="onCloseTurn()">
@@ -152,6 +199,14 @@
             <strong>{{ bloc.cashCut()!.totalElectronicCOP | currency:'COP':'$':'1.0-0' }}</strong>
           </div>
           <div class="summary-row">
+            <span>(+) Ingresos Manuales</span>
+            <strong class="text-success">{{ bloc.cashCut()!.totalManualCreditsCOP | currency:'COP':'$':'1.0-0' }}</strong>
+          </div>
+          <div class="summary-row">
+            <span>(-) Egresos Manuales</span>
+            <strong class="text-error">{{ bloc.cashCut()!.totalManualDebitsCOP | currency:'COP':'$':'1.0-0' }}</strong>
+          </div>
+          <div class="summary-row">
             <span>Reportado por operario</span>
             <strong>{{ bloc.cashCut()!.reportedCashCOP | currency:'COP':'$':'1.0-0' }}</strong>
           </div>
@@ -172,4 +227,11 @@
       </section>
     }
   </div>
+
+  @if (showMovementModal()) {
+    <app-movement-modal 
+      (closed)="showMovementModal.set(false)"
+      (saved)="onMovementSaved()">
+    </app-movement-modal>
+  }
 </main>

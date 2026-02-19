@@ -1,0 +1,67 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal-content glass-card" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <h2>Registrar Movimiento Manual</h2>
+      <button class="btn-close" (click)="close()">
+        <span class="material-icons">close</span>
+      </button>
+    </header>
+
+    @if (error()) {
+      <div class="error-banner">
+        <span class="material-icons">error</span>
+        <span>{{ error() }}</span>
+      </div>
+    }
+
+    <form (ngSubmit)="save()" class="movement-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tipo de Movimiento</label>
+          <app-custom-select
+            [options]="typeOptions"
+            [(ngModel)]="form.type"
+            name="type"
+          ></app-custom-select>
+        </div>
+
+        <div class="form-group">
+          <label>Categoría</label>
+          <app-custom-select
+            [options]="categoryOptions"
+            [(ngModel)]="form.category"
+            name="category"
+          ></app-custom-select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Monto (COP)</label>
+        <div class="amount-wrapper">
+          <span class="currency">$</span>
+          <input type="number" name="amount" [(ngModel)]="form.amount" required class="form-input" 
+                 placeholder="0" min="1">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Descripción / Justificación</label>
+        <textarea name="description" [(ngModel)]="form.description" required class="form-input" rows="3"
+                  placeholder="Ej: Compra de 2 resmas de papel para tickets"></textarea>
+      </div>
+
+      <footer class="form-actions">
+        <button type="button" class="btn btn--ghost" (click)="close()" [disabled]="loading()">Cancelar</button>
+        <button type="submit" class="btn btn--primary" [disabled]="loading() || !form.description || form.amount <= 0">
+          @if (loading()) {
+            <span class="spinner-sm"></span>
+            <span>Registrando...</span>
+          } @else {
+            <span class="material-icons">save</span>
+            <span>Guardar Movimiento</span>
+          }
+        </button>
+      </footer>
+    </form>
+  </div>
+</div>

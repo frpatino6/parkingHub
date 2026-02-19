@@ -17,10 +17,15 @@ export interface CashCutProps {
   totalCash: Money;
   /** Running sum of ELECTRONIC payments (card, qr, etc) */
   totalElectronic: Money;
+  /** Manual cash entries (not related to tickets) */
+  totalManualCredits: Money;
+  /** Manual cash outflows (expenses, supplies) */
+  totalManualDebits: Money;
   /** Cash amount reported by operator at close time */
   reportedCash?: Money;
   /**
-   * Signed difference: reportedCash.amount - totalCash.amount (COP).
+   * Signed difference: reportedCash.amount - ExpectedCash.amount (COP).
+   * ExpectedCash = totalCash + totalManualCredits - totalManualDebits.
    * Positive = surplus, negative = deficit.
    */
   discrepancyCOP?: number;
@@ -53,6 +58,8 @@ export class CashCut {
       totalSales: Money.zero(), 
       totalCash: Money.zero(),
       totalElectronic: Money.zero(),
+      totalManualCredits: Money.zero(),
+      totalManualDebits: Money.zero(),
     });
   }
 
@@ -66,6 +73,8 @@ export class CashCut {
   get totalSales(): Money { return this._props.totalSales; }
   get totalCash(): Money { return this._props.totalCash; }
   get totalElectronic(): Money { return this._props.totalElectronic; }
+  get totalManualCredits(): Money { return this._props.totalManualCredits; }
+  get totalManualDebits(): Money { return this._props.totalManualDebits; }
   get reportedCash(): Money | undefined { return this._props.reportedCash; }
   get discrepancyCOP(): number | undefined { return this._props.discrepancyCOP; }
   get createdAt(): Date | undefined { return this._props.createdAt; }
@@ -92,10 +101,7 @@ export class CashCut {
     this._props.updatedAt = new Date();
   }
 
-  /**
-   * Closes the cash cut and calculates the discrepancy.
-   * discrepancyCOP = reportedCash - totalSales (can be negative).
-   */
+  /** Closes the cash cut and calculates the discrepancy. */
   close(reportedCash: Money): void {
     if (!this.isOpen()) {
       throw new ValidationError('Cash cut is already closed');
@@ -103,8 +109,24 @@ export class CashCut {
     this._props.status = CashCutStatus.CLOSED;
     this._props.closedAt = new Date();
     this._props.reportedCash = reportedCash;
-    // Calculate discrepancy ONLY against CASH sales
-    this._props.discrepancyCOP = reportedCash.amount - this._props.totalCash.amount;
+
+    const expectedCash = this._props.totalCash.amount +
+                        this._props.totalManualCredits.amount -
+                        this._props.totalManualDebits.amount;
+
+    this._props.discrepancyCOP = reportedCash.amount - expectedCash;
+    this._props.updatedAt = new Date();
+  }
+
+  addMovement(amount: Money, type: string): void {
+    if (!this.isOpen()) {
+      throw new ValidationError('Cannot add movements to a closed cash cut');
+    }
+    if (type === 'INCOME') {
+      this._props.totalManualCredits = this._props.totalManualCredits.add(amount);
+    } else {
+      this._props.totalManualDebits = this._props.totalManualDebits.add(amount);
+    }
     this._props.updatedAt = new Date();
   }
 }

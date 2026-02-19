@@ -3,7 +3,7 @@ import { UserRole } from '../../../domain/enums/user-role.enum.js';
 
 interface IUserDoc {
   tenantId: string;
-  branchId?: string;
+  branchIds: string[];
   name: string;
   email: string;
   passwordHash: string;
@@ -16,7 +16,7 @@ interface IUserDoc {
 const userSchema = new Schema<IUserDoc>(
   {
     tenantId: { type: String, required: true, index: true },
-    branchId: { type: String },
+    branchIds: { type: [String], default: [] },
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },

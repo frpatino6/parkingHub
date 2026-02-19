@@ -8,6 +8,8 @@ export interface CashCut {
   totalSalesCOP: number;
   totalCashCOP: number;
   totalElectronicCOP: number;
+  totalManualCreditsCOP: number;
+  totalManualDebitsCOP: number;
   reportedCashCOP?: number;
   discrepancyCOP?: number;
 }

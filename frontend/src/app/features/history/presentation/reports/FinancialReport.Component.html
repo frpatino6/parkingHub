@@ -1,0 +1,78 @@
+<div class="financial-report">
+  <div class="report-filters glass-card">
+    <div class="filter-group">
+      <label>Desde</label>
+      <input type="date" [(ngModel)]="startDate" (change)="loadReport()" class="form-input">
+    </div>
+    <div class="filter-group">
+      <label>Hasta</label>
+      <input type="date" [(ngModel)]="endDate" (change)="loadReport()" class="form-input">
+    </div>
+    <button class="btn btn--primary" (click)="loadReport()" [disabled]="loading()">
+      Actualizar
+    </button>
+  </div>
+
+  <div class="summary-cards">
+    <div class="summary-card income">
+      <span class="label">Total Ingresos</span>
+      <span class="value">{{ totalIncome() | currency:'COP':'$':'1.0-0' }}</span>
+    </div>
+    <div class="summary-card expense">
+      <span class="label">Total Egresos</span>
+      <span class="value">{{ totalExpense() | currency:'COP':'$':'1.0-0' }}</span>
+    </div>
+    <div class="summary-card balance" [class.negative]="balance() < 0">
+      <span class="label">Balance Neto</span>
+      <span class="value">{{ balance() | currency:'COP':'$':'1.0-0' }}</span>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="state-placeholder">
+      <span class="spinner"></span>
+      <p>Consultando movimientos...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-banner">
+      <span class="material-icons">error_outline</span>
+      {{ error() }}
+    </div>
+  } @else if (movements().length === 0) {
+    <div class="state-placeholder">
+      <span class="material-icons">query_stats</span>
+      <p>No hay movimientos manuales en este periodo.</p>
+    </div>
+  } @else {
+    <div class="table-container glass-card">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Categoría</th>
+            <th>Descripción</th>
+            <th>Monto</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of movements(); track m.id) {
+            <tr>
+              <td class="col-date">{{ m.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <span class="type-badge" [class]="m.type.toLowerCase()">
+                  {{ m.type === 'INCOME' ? 'Ingreso' : 'Egreso' }}
+                </span>
+              </td>
+              <td>{{ getCategoryLabel(m.category) }}</td>
+              <td class="col-desc">{{ m.description }}</td>
+              <td class="col-amount" [class.expense]="m.type === 'EXPENSE'">
+                {{ (m.type === 'EXPENSE' ? -m.amountCOP : m.amountCOP) | currency:'COP':'$':'1.0-0' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

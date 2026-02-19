@@ -1,0 +1,262 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/typography' as *;
+@use '../../../../styles/mixins' as *;
+
+.pricing-page {
+  padding: $space-8;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: $space-10;
+  text-align: center;
+
+  .page-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba($primary-500, 0.1);
+    color: $primary-400;
+    border-radius: $radius-xl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto $space-4;
+    border: 1px solid rgba($primary-500, 0.2);
+
+    .material-icons { font-size: 32px; }
+  }
+
+  .page-title {
+    font-size: $text-3xl;
+    font-weight: $font-bold;
+    color: $neutral-50;
+    margin-bottom: $space-2;
+  }
+
+  .page-subtitle {
+    color: $neutral-400;
+    font-size: $text-base;
+  }
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: $space-6;
+}
+
+.pricing-card {
+  padding: $space-6;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  &.inactive {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  margin-bottom: $space-6;
+
+  .vehicle-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba($neutral-100, 0.05);
+    border-radius: $radius-lg;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $primary-300;
+    
+    .material-icons { font-size: 28px; }
+  }
+
+  .vehicle-info {
+    flex: 1;
+
+    .vehicle-type {
+      font-size: $text-lg;
+      font-weight: $font-bold;
+      color: white;
+      margin: 0;
+    }
+
+    .status-badge {
+      font-size: $text-xs;
+      padding: 2px 8px;
+      border-radius: $radius-full;
+      background: rgba($error-500, 0.1);
+      color: $error-400;
+      border: 1px solid rgba($error-500, 0.2);
+
+      &.active {
+        background: rgba($accent-500, 0.1);
+        color: $accent-400;
+        border: 1px solid rgba($accent-500, 0.2);
+      }
+    }
+  }
+}
+
+.rate-info {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+  padding: $space-6;
+  border-radius: $radius-xl;
+  margin-bottom: $space-6;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+
+  .rate-value {
+    display: block;
+    font-size: $text-4xl;
+    font-weight: $font-bold;
+    color: white;
+    line-height: 1;
+    margin-bottom: $space-1;
+  }
+
+  .rate-mode {
+    font-size: $text-sm;
+    color: $neutral-400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.config-details {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  margin-bottom: $space-6;
+
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: $text-sm;
+
+    .label { color: $neutral-500; }
+    .value { color: $neutral-100; font-weight: $font-medium; }
+  }
+}
+
+.card-footer {
+  margin-top: auto;
+}
+
+// Modal Styles
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba($neutral-950, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-4;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 500px;
+  padding: $space-8;
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $space-8;
+
+    h2 { font-size: $text-xl; font-weight: $font-bold; color: white; margin: 0; }
+    .btn-close { 
+      background: none; border: none; color: $neutral-500; font-size: 20px; cursor: pointer; 
+      transition: color 0.2s;
+      &:hover { color: white; }
+    }
+  }
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-4;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+
+    label { font-size: $text-xs; font-weight: $font-bold; color: $neutral-500; text-transform: uppercase; }
+  }
+
+  .input-wrapper {
+    position: relative;
+    .prefix { 
+      position: absolute; left: $space-4; top: 50%; transform: translateY(-50%); 
+      color: $neutral-500; font-weight: $font-bold;
+    }
+    .form-input { padding-left: $space-8; }
+  }
+
+  .form-input {
+    background: rgba($neutral-900, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: $radius-lg;
+    padding: $space-3 $space-4;
+    color: white;
+    font-size: $text-base;
+    transition: all 0.2s;
+
+    &:focus { outline: none; border-color: $primary-500; box-shadow: 0 0 0 3px rgba($primary-500, 0.2); }
+  }
+
+  .checkbox-group {
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: $space-3;
+      color: $neutral-300;
+      cursor: pointer;
+      font-size: $text-sm;
+      user-select: none;
+    }
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: $primary-500;
+    }
+  }
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $space-4;
+  margin-top: $space-4;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@media (max-width: 480px) {
+  .pricing-page { padding: $space-4; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}

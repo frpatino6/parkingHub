@@ -1,0 +1,141 @@
+<main class="pricing-page">
+  <header class="page-header">
+    <div class="page-icon">
+      <span class="material-icons">payments</span>
+    </div>
+    <h1 class="page-title">Configuración de Tarifas</h1>
+    <p class="page-subtitle">Gestiona los precios de parqueo por tipo de vehículo</p>
+  </header>
+
+  @if (isLoading()) {
+    <div class="state-card loading-state">
+      <span class="spinner"></span>
+      <p>Cargando configuraciones...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error-banner" role="alert">
+      <span class="material-icons">error_outline</span>
+      {{ error() }}
+    </div>
+  }
+
+  <div class="pricing-grid">
+    @for (config of configs(); track config.id) {
+      <div class="pricing-card glass-card" [class.inactive]="!config.active">
+        <div class="card-header">
+          <div class="vehicle-icon">
+            <span class="material-icons">{{ getVehicleIcon(config.vehicleType) }}</span>
+          </div>
+          <div class="vehicle-info">
+            <h2 class="vehicle-type">{{ getVehicleLabel(config.vehicleType) }}</h2>
+            <span class="status-badge" [class.active]="config.active">
+              {{ config.active ? 'Activa' : 'Inactiva' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="rate-info">
+            <span class="rate-value">{{ config.ratePerUnit | currency:'COP':'$':'1.0-0' }}</span>
+            <span class="rate-mode">{{ getModeLabel(config.mode) }}</span>
+          </div>
+
+          <div class="config-details">
+            <div class="detail-item">
+              <span class="label">Periodo de Gracia</span>
+              <span class="value">{{ config.gracePeriodMinutes }} min</span>
+            </div>
+            @if (config.mode === 'BLOCK') {
+              <div class="detail-item">
+                <span class="label">Tamaño de Bloque</span>
+                <span class="value">{{ config.blockSizeMinutes }} min</span>
+              </div>
+            }
+            <div class="detail-item">
+              <span class="label">Tope Diario</span>
+              <span class="value">
+                {{ config.dayMaxRate ? (config.dayMaxRate | currency:'COP':'$':'1.0-0') : 'Sin límite' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button type="button" class="btn btn--outline" (click)="onEdit(config)">
+            <span class="material-icons">edit</span>
+            Editar Tarifas
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (editingConfig(); as config) {
+    <div class="modal-overlay" (click)="onCancelEdit()">
+      <div class="modal-content glass-card" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+          <h2>Editar Tarifas: {{ getVehicleLabel(config.vehicleType) }}</h2>
+          <button class="btn-close" (click)="onCancelEdit()">✕</button>
+        </header>
+
+        <form class="edit-form" [formGroup]="editForm" (ngSubmit)="onSave()">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Modo de Cobro</label>
+              <select formControlName="mode" class="form-input">
+                <option value="MINUTE">Por Minuto</option>
+                <option value="FRACTION">Por Fracción</option>
+                <option value="BLOCK">Por Bloque</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Precio Unitario (COP)</label>
+              <div class="input-wrapper">
+                <span class="prefix">$</span>
+                <input type="number" formControlName="ratePerUnit" class="form-input">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Periodo de Gracia (Min)</label>
+              <input type="number" formControlName="gracePeriodMinutes" class="form-input">
+            </div>
+            <div class="form-group">
+              <label>Tope Diario (COP)</label>
+              <input type="number" formControlName="dayMaxRate" class="form-input">
+            </div>
+          </div>
+
+          @if (editForm.get('mode')?.value === 'BLOCK') {
+            <div class="form-group">
+              <label>Minutos por Bloque</label>
+              <input type="number" formControlName="blockSizeMinutes" class="form-input">
+            </div>
+          }
+
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="active">
+              Tarifa Activa
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn--text" (click)="onCancelEdit()">Cancelar</button>
+            <button type="submit" class="btn btn--primary" [disabled]="editForm.invalid || isSubmitting()">
+              @if (isSubmitting()) {
+                <span class="spinner-sm"></span>
+              } @else {
+                Guardar Cambios
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</main>

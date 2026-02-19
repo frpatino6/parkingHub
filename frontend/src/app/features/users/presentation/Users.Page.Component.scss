@@ -1,0 +1,281 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+@use '../../../../styles/typography' as *;
+
+.users-container {
+  padding: $space-6;
+  max-width: 1200px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease-out;
+
+  @include md {
+    padding: $space-8;
+  }
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $space-8;
+  flex-wrap: wrap;
+  gap: $space-4;
+
+  .header-content {
+    h1 {
+      font-size: $text-3xl;
+      font-weight: $font-bold;
+      color: $neutral-50;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: $neutral-400;
+      margin-top: $space-2;
+      font-size: $text-sm;
+    }
+  }
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: $neutral-200;
+  
+  thead {
+    background: rgba($neutral-900, 0.5);
+    border-bottom: 1px solid rgba($neutral-700, 0.5);
+
+    th {
+      padding: $space-4 $space-6;
+      text-align: left;
+      font-size: $text-xs;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: $neutral-400;
+      font-weight: $font-semibold;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid rgba($neutral-800, 0.5);
+      transition: background 0.2s;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background: rgba($primary-500, 0.05);
+      }
+    }
+
+    td {
+      padding: $space-4 $space-6;
+      vertical-align: middle;
+      font-size: $text-sm;
+    }
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: $space-4;
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, $primary-500, $primary-700);
+      border-radius: $radius-md;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: $font-bold;
+      color: white;
+      box-shadow: 0 4px 12px rgba($primary-500, 0.3);
+    }
+
+    .details {
+      display: flex;
+      flex-direction: column;
+
+      .name {
+        font-weight: $font-semibold;
+        color: $neutral-50;
+      }
+
+      .email {
+        font-size: $text-xs;
+        color: $neutral-400;
+      }
+    }
+  }
+}
+
+.role-badge {
+  padding: $space-1 $space-3;
+  border-radius: $radius-full;
+  font-size: $text-xs;
+  font-weight: $font-bold;
+  text-transform: uppercase;
+
+  &.operator { background: rgba($primary-500, 0.2); color: $primary-400; }
+  &.parking_admin { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+  &.super_admin { background: rgba($warning-500, 0.2); color: $warning-500; }
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: $text-sm;
+
+  &::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: $radius-full;
+  }
+
+  &.active {
+    color: $accent-400;
+    &::before { background: $accent-400; box-shadow: 0 0 8px $accent-400; }
+  }
+
+  &.inactive {
+    color: $neutral-500;
+    &::before { background: $neutral-500; }
+  }
+}
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.btn-danger {
+  &:hover {
+    color: $error-400 !important;
+    border-color: $error-500 !important;
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba($neutral-950, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $space-4;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 500px;
+  padding: $space-8;
+  position: relative;
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: $space-4;
+    border-bottom: 1px solid rgba($neutral-700, 0.5);
+    margin-bottom: $space-6;
+
+    h2 { 
+      margin: 0; 
+      font-size: $text-xl; 
+      color: $neutral-50;
+    }
+  }
+}
+
+.form-group {
+  margin-bottom: $space-4;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  label {
+    font-size: $text-xs;
+    color: $neutral-400;
+    font-weight: $font-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $space-4;
+  margin-top: $space-8;
+  padding-top: $space-6;
+  border-top: 1px solid rgba($neutral-700, 0.5);
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  color: $neutral-500;
+  cursor: pointer;
+  padding: $space-1;
+  border-radius: $radius-md;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba($neutral-500, 0.1);
+    color: $neutral-300;
+  }
+}
+
+.form-input {
+  width: 100%;
+  padding: $space-3 $space-4; 
+  background: rgba($neutral-900, 0.3) !important;
+  border: 1px solid rgba($neutral-600, 0.5);
+  border-radius: $radius-lg;
+  color: $neutral-100;
+  font-family: $font-primary;
+  font-size: $text-sm;
+  transition: all 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    background: rgba($neutral-900, 0.5) !important;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.2);
+  }
+
+  &::placeholder {
+    color: $neutral-500;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

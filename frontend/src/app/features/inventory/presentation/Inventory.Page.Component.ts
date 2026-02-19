@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/infrastructure/auth/Auth.Service';
 import { FormsModule } from '@angular/forms';
+import { extractApiError } from '../../../shared/utils/api-error.util';
 
 interface Ticket {
   id: string;
@@ -63,8 +64,7 @@ export class InventoryPageComponent implements OnInit {
           this.loading.set(false);
         },
         error: (err) => {
-          console.error(err);
-          this.error.set('No se pudo cargar el inventario.');
+          this.error.set(extractApiError(err, 'No se pudo cargar el inventario.'));
           this.loading.set(false);
         }
       });

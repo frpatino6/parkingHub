@@ -41,6 +41,8 @@ export class MongoCashCutRepository implements CashCutRepository {
       totalSalesCOP: cashCut.totalSales.amount,
       totalCashCOP: cashCut.totalCash.amount,
       totalElectronicCOP: cashCut.totalElectronic.amount,
+      totalManualCreditsCOP: cashCut.totalManualCredits.amount,
+      totalManualDebitsCOP: cashCut.totalManualDebits.amount,
     });
     return this.toDomain(doc);
   }
@@ -54,6 +56,8 @@ export class MongoCashCutRepository implements CashCutRepository {
         totalSalesCOP: cashCut.totalSales.amount,
         totalCashCOP: cashCut.totalCash.amount,
         totalElectronicCOP: cashCut.totalElectronic.amount,
+        totalManualCreditsCOP: cashCut.totalManualCredits.amount,
+        totalManualDebitsCOP: cashCut.totalManualDebits.amount,
         reportedCashCOP: cashCut.reportedCash?.amount,
         discrepancyCOP: cashCut.discrepancyCOP,
       },
@@ -73,8 +77,10 @@ export class MongoCashCutRepository implements CashCutRepository {
       openedAt: doc.openedAt,
       closedAt: doc.closedAt,
       totalSales: new Money(doc.totalSalesCOP),
-      totalCash: new Money(doc.totalCashCOP ?? 0), // Fallback for existing records
+      totalCash: new Money(doc.totalCashCOP ?? 0), 
       totalElectronic: new Money(doc.totalElectronicCOP ?? 0),
+      totalManualCredits: new Money(doc.totalManualCreditsCOP ?? 0),
+      totalManualDebits: new Money(doc.totalManualDebitsCOP ?? 0),
       reportedCash: doc.reportedCashCOP !== undefined ? new Money(doc.reportedCashCOP) : undefined,
       discrepancyCOP: doc.discrepancyCOP,
       createdAt: doc.createdAt,

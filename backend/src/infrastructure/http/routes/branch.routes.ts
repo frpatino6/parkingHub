@@ -10,6 +10,7 @@ const createBranchSchema = z.object({
 
 export function createBranchRoutes(controller: BranchController): Router {
   const router = Router();
+  router.get('/', controller.listByTenant);
   router.post('/', validate(createBranchSchema), controller.create);
   return router;
 }

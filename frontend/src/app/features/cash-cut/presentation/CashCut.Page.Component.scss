@@ -275,6 +275,16 @@
     background: rgba($primary-500, 0.12);
     color: $primary-400;
   }
+
+  &.income {
+    background: rgba($accent-500, 0.12);
+    color: $accent-400;
+  }
+
+  &.expense {
+    background: rgba($error-500, 0.12);
+    color: $error-400;
+  }
 }
 
 .breakdown-info {
@@ -299,6 +309,81 @@
   height: 1px;
   background: rgba(255, 255, 255, 0.06);
   margin-bottom: $space-6;
+}
+
+// Quick Actions
+.quick-actions {
+  margin-bottom: $space-8;
+}
+
+.btn--outline {
+  background: rgba($primary-500, 0.05);
+  border: 1px solid rgba($primary-500, 0.3);
+  color: $primary-300;
+
+  &:hover:not(:disabled) {
+    background: rgba($primary-500, 0.1);
+    border-color: $primary-400;
+    color: white;
+  }
+}
+
+// Recent Movements
+.recent-movements {
+  margin-bottom: $space-8;
+  animation: fadeIn 0.4s ease-out both;
+
+  .section-title {
+    font-size: $text-xs;
+    font-weight: $font-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: $neutral-500;
+    margin-bottom: $space-4;
+  }
+}
+
+.movements-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: $space-2;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: $radius-full; }
+}
+
+.movement-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $space-3 $space-4;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: $radius-lg;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition: all 0.2s;
+
+  &:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.08); }
+
+  .m-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .m-desc { font-size: $text-sm; color: $neutral-100; font-weight: $font-medium; }
+  .m-cat { font-size: $text-xs; color: $neutral-500; }
+
+  .m-amount {
+    font-size: $text-sm;
+    font-weight: $font-bold;
+    color: $accent-400;
+  }
+
+  &.is-expense .m-amount { color: $error-400; }
 }
 
 // ────────────────────────────────────────────────────
@@ -429,6 +514,9 @@
     &.zero strong { color: $accent-400; }
     &.negative strong { color: $error-400; }
   }
+
+  .text-success { color: $accent-400 !important; }
+  .text-error { color: $error-400 !important; }
 }
 
 .summary-divider {

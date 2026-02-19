@@ -1,0 +1,36 @@
+<div class="custom-select" [class.disabled]="_disabled()">
+  <button
+    type="button"
+    class="select-trigger"
+    [class.open]="isOpen()"
+    [disabled]="_disabled()"
+    (click)="toggle()"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-haspopup]="'listbox'"
+    aria-label="Seleccionar opción"
+  >
+    <span class="trigger-label">{{ selectedLabel() }}</span>
+    <span class="trigger-icon material-icons" [class.rotated]="isOpen()">
+      expand_more
+    </span>
+  </button>
+
+  @if (isOpen()) {
+    <ul
+      class="select-dropdown"
+      role="listbox"
+    >
+      @for (opt of options; track opt.value) {
+        <li
+          role="option"
+          class="select-option"
+          [class.selected]="isSelected(opt.value)"
+          [attr.aria-selected]="isSelected(opt.value)"
+          (click)="select(opt.value)"
+        >
+          {{ opt.label }}
+        </li>
+      }
+    </ul>
+  }
+</div>

@@ -17,6 +17,8 @@ const createPricingConfigSchema = z.object({
 
 export function createPricingConfigRoutes(controller: PricingConfigController): Router {
   const router = Router();
+  router.get('/', controller.listByBranch);
   router.post('/', validate(createPricingConfigSchema), controller.create);
+  router.patch('/:id', controller.update);
   return router;
 }
