@@ -1,0 +1,50 @@
+import { Request, Response, NextFunction } from 'express';
+import { OpenCashCutUseCase } from '../../../application/use-cases/cash-cut/open-cash-cut.use-case.js';
+import { CloseCashCutUseCase } from '../../../application/use-cases/cash-cut/close-cash-cut.use-case.js';
+import { CashCut } from '../../../domain/entities/cash-cut.entity.js';
+
+export class CashCutController {
+  constructor(
+    private readonly openCashCutUseCase: OpenCashCutUseCase,
+    private readonly closeCashCutUseCase: CloseCashCutUseCase,
+  ) {}
+
+  open = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const cashCut = await this.openCashCutUseCase.execute({
+        tenantId: req.auth!.tenantId,
+        branchId: req.auth!.branchId!,
+        operatorId: req.auth!.userId,
+      });
+      res.status(201).json(this.toResponse(cashCut));
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  close = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const cashCut = await this.closeCashCutUseCase.execute({
+        tenantId: req.auth!.tenantId,
+        branchId: req.auth!.branchId!,
+        operatorId: req.auth!.userId,
+        reportedCash: req.body.reportedCash as number,
+      });
+      res.json(this.toResponse(cashCut));
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  private toResponse(cashCut: CashCut) {
+    return {
+      id: cashCut.id,
+      status: cashCut.status,
+      openedAt: cashCut.openedAt,
+      closedAt: cashCut.closedAt,
+      totalSalesCOP: cashCut.totalSales.amount,
+      reportedCashCOP: cashCut.reportedCash?.amount,
+      discrepancyCOP: cashCut.discrepancyCOP,
+    };
+  }
+}

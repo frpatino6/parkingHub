@@ -26,7 +26,7 @@ export class CreateBranchUseCase implements UseCase<CreateBranchDto, Branch> {
       new AuditLog({
         tenantId: dto.tenantId,
         branchId: saved.id,
-        userId: dto.tenantId, // created by the tenant admin
+        userId: dto.createdBy,
         action: AuditAction.BRANCH_CREATED,
         entityType: 'Branch',
         entityId: saved.id!,
