@@ -1,4 +1,4 @@
-import { Ticket } from '../entities/ticket.entity.js';
+import { Ticket } from '../entities/Ticket.Entity.js';
 import { TicketStatus } from '../enums/ticket-status.enum.js';
 
 export interface TicketRepository {

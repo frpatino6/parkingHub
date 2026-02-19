@@ -1,4 +1,4 @@
-import { CashCut } from '../entities/cash-cut.entity.js';
+import { CashCut } from '../entities/CashCut.Entity.js';
 import { CashCutStatus } from '../enums/cash-cut-status.enum.js';
 
 export interface CashCutRepository {

@@ -1,12 +1,12 @@
 import { UseCase } from '../../interfaces/use-case.interface.js';
 import { CheckOutDto } from '../../dtos/check-out.dto.js';
-import { TicketRepository } from '../../../domain/ports/ticket.repository.port.js';
-import { PricingConfigRepository } from '../../../domain/ports/pricing-config.repository.port.js';
-import { CashCutRepository } from '../../../domain/ports/cash-cut.repository.port.js';
-import { AuditLogRepository } from '../../../domain/ports/audit-log.repository.port.js';
+import { TicketRepository } from '../../../domain/ports/TicketRepository.Port.js';
+import { PricingConfigRepository } from '../../../domain/ports/PricingConfigRepository.Port.js';
+import { CashCutRepository } from '../../../domain/ports/CashCutRepository.Port.js';
+import { AuditLogRepository } from '../../../domain/ports/AuditLogRepository.Port.js';
 import { PricingEngineService } from '../../services/pricing-engine.service.js';
-import { Ticket } from '../../../domain/entities/ticket.entity.js';
-import { AuditLog } from '../../../domain/entities/audit-log.entity.js';
+import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
+import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 import { NotFoundError, ForbiddenError } from '../../../domain/errors/domain-errors.js';
 

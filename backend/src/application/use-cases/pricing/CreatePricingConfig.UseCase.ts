@@ -1,9 +1,9 @@
 import { UseCase } from '../../interfaces/use-case.interface.js';
 import { CreatePricingConfigDto } from '../../dtos/create-pricing-config.dto.js';
-import { PricingConfigRepository } from '../../../domain/ports/pricing-config.repository.port.js';
-import { AuditLogRepository } from '../../../domain/ports/audit-log.repository.port.js';
-import { PricingConfig } from '../../../domain/entities/pricing-config.entity.js';
-import { AuditLog } from '../../../domain/entities/audit-log.entity.js';
+import { PricingConfigRepository } from '../../../domain/ports/PricingConfigRepository.Port.js';
+import { AuditLogRepository } from '../../../domain/ports/AuditLogRepository.Port.js';
+import { PricingConfig } from '../../../domain/entities/PricingConfig.Entity.js';
+import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 import { Money } from '../../../domain/value-objects/money.value-object.js';
 

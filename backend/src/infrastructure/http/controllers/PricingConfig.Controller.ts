@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { CreatePricingConfigUseCase } from '../../../application/use-cases/pricing/create-pricing-config.use-case.js';
+import { CreatePricingConfigUseCase } from '../../../application/use-cases/pricing/CreatePricingConfig.UseCase.js';
 import { VehicleType } from '../../../domain/enums/vehicle-type.enum.js';
 import { PricingMode } from '../../../domain/enums/pricing-mode.enum.js';
 

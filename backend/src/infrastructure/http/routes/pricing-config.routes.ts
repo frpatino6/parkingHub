@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { PricingConfigController } from '../controllers/pricing-config.controller.js';
+import { PricingConfigController } from '../controllers/PricingConfig.Controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { VehicleType } from '../../../domain/enums/vehicle-type.enum.js';
 import { PricingMode } from '../../../domain/enums/pricing-mode.enum.js';

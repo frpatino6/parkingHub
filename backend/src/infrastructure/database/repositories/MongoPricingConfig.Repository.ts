@@ -1,22 +1,28 @@
-import { PricingConfigRepository } from '../../../domain/ports/pricing-config.repository.port.js';
-import { PricingConfig } from '../../../domain/entities/pricing-config.entity.js';
+import { PricingConfigRepository } from '../../../domain/ports/PricingConfigRepository.Port.js';
+import { PricingConfig } from '../../../domain/entities/PricingConfig.Entity.js';
 import { VehicleType } from '../../../domain/enums/vehicle-type.enum.js';
 import { Money } from '../../../domain/value-objects/money.value-object.js';
 import { PricingConfigModel, PricingConfigDoc } from '../models/pricing-config.model.js';
+import { TenantContext } from '../../config/TenantContext.js';
 
 export class MongoPricingConfigRepository implements PricingConfigRepository {
   async findById(id: string): Promise<PricingConfig | null> {
-    const doc = await PricingConfigModel.findById(id).catch(() => null);
+    const doc = await PricingConfigModel.findOne({ _id: id, tenantId: TenantContext.tenantId }).catch(() => null);
     return doc ? this.toDomain(doc) : null;
   }
 
   async findActive(branchId: string, vehicleType: VehicleType): Promise<PricingConfig | null> {
-    const doc = await PricingConfigModel.findOne({ branchId, vehicleType, active: true });
+    const doc = await PricingConfigModel.findOne({
+      tenantId: TenantContext.tenantId,
+      branchId,
+      vehicleType,
+      active: true,
+    });
     return doc ? this.toDomain(doc) : null;
   }
 
   async findByBranch(branchId: string): Promise<PricingConfig[]> {
-    const docs = await PricingConfigModel.find({ branchId });
+    const docs = await PricingConfigModel.find({ tenantId: TenantContext.tenantId, branchId });
     return docs.map((d) => this.toDomain(d));
   }
 

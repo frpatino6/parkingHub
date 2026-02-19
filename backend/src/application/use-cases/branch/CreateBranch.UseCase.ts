@@ -1,9 +1,9 @@
 import { UseCase } from '../../interfaces/use-case.interface.js';
 import { CreateBranchDto } from '../../dtos/create-branch.dto.js';
-import { BranchRepository } from '../../../domain/ports/branch.repository.port.js';
-import { AuditLogRepository } from '../../../domain/ports/audit-log.repository.port.js';
-import { Branch } from '../../../domain/entities/branch.entity.js';
-import { AuditLog } from '../../../domain/entities/audit-log.entity.js';
+import { BranchRepository } from '../../../domain/ports/BranchRepository.Port.js';
+import { AuditLogRepository } from '../../../domain/ports/AuditLogRepository.Port.js';
+import { Branch } from '../../../domain/entities/Branch.Entity.js';
+import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 
 export class CreateBranchUseCase implements UseCase<CreateBranchDto, Branch> {

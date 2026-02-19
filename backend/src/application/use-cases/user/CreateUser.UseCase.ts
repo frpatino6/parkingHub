@@ -1,10 +1,10 @@
 import { UseCase } from '../../interfaces/use-case.interface.js';
 import { CreateUserDto } from '../../dtos/create-user.dto.js';
-import { UserRepository } from '../../../domain/ports/user.repository.port.js';
-import { AuditLogRepository } from '../../../domain/ports/audit-log.repository.port.js';
+import { UserRepository } from '../../../domain/ports/UserRepository.Port.js';
+import { AuditLogRepository } from '../../../domain/ports/AuditLogRepository.Port.js';
 import { HashingService } from '../../ports/hashing.service.port.js';
-import { User } from '../../../domain/entities/user.entity.js';
-import { AuditLog } from '../../../domain/entities/audit-log.entity.js';
+import { User } from '../../../domain/entities/User.Entity.js';
+import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 import { UserRole } from '../../../domain/enums/user-role.enum.js';
 import { ConflictError, ValidationError } from '../../../domain/errors/domain-errors.js';

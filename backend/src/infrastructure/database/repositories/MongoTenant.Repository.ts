@@ -1,4 +1,4 @@
-import { TenantRepository } from '../../../domain/ports/tenant.repository.port.js';
+import { TenantRepository } from '../../../domain/ports/TenantRepository.Port.js';
 import { Tenant } from '../../../domain/entities/Tenant.Entity.js';
 import { TenantModel, TenantDoc } from '../models/tenant.model.js';
 

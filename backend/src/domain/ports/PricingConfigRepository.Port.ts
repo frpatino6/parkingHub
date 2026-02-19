@@ -1,4 +1,4 @@
-import { PricingConfig } from '../entities/pricing-config.entity.js';
+import { PricingConfig } from '../entities/PricingConfig.Entity.js';
 import { VehicleType } from '../enums/vehicle-type.enum.js';
 
 export interface PricingConfigRepository {

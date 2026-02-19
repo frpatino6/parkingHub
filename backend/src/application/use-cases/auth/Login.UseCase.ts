@@ -1,6 +1,6 @@
 import { UseCase } from '../../interfaces/use-case.interface.js';
 import { LoginDto, LoginResult } from '../../dtos/login.dto.js';
-import { UserRepository } from '../../../domain/ports/user.repository.port.js';
+import { UserRepository } from '../../../domain/ports/UserRepository.Port.js';
 import { HashingService } from '../../ports/hashing.service.port.js';
 import { TokenService } from '../../ports/token.service.port.js';
 import { UnauthorizedError } from '../../../domain/errors/domain-errors.js';

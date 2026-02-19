@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { CreateBranchUseCase } from '../../../application/use-cases/branch/create-branch.use-case.js';
+import { CreateBranchUseCase } from '../../../application/use-cases/branch/CreateBranch.UseCase.js';
 
 export class BranchController {
   constructor(private readonly createBranchUseCase: CreateBranchUseCase) {}

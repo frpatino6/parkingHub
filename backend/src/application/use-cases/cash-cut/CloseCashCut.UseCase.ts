@@ -1,9 +1,9 @@
 import { UseCase } from '../../interfaces/use-case.interface.js';
 import { CloseCashCutDto } from '../../dtos/close-cash-cut.dto.js';
-import { CashCutRepository } from '../../../domain/ports/cash-cut.repository.port.js';
-import { AuditLogRepository } from '../../../domain/ports/audit-log.repository.port.js';
-import { CashCut } from '../../../domain/entities/cash-cut.entity.js';
-import { AuditLog } from '../../../domain/entities/audit-log.entity.js';
+import { CashCutRepository } from '../../../domain/ports/CashCutRepository.Port.js';
+import { AuditLogRepository } from '../../../domain/ports/AuditLogRepository.Port.js';
+import { CashCut } from '../../../domain/entities/CashCut.Entity.js';
+import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 import { Money } from '../../../domain/value-objects/money.value-object.js';
 import { NotFoundError } from '../../../domain/errors/domain-errors.js';

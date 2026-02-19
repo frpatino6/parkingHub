@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { TicketController } from '../controllers/ticket.controller.js';
+import { TicketController } from '../controllers/Ticket.Controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { VehicleType } from '../../../domain/enums/vehicle-type.enum.js';
 import { PaymentMethod } from '../../../domain/enums/payment-method.enum.js';

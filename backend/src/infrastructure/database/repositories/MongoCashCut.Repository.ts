@@ -1,17 +1,19 @@
-import { CashCutRepository } from '../../../domain/ports/cash-cut.repository.port.js';
-import { CashCut } from '../../../domain/entities/cash-cut.entity.js';
+import { CashCutRepository } from '../../../domain/ports/CashCutRepository.Port.js';
+import { CashCut } from '../../../domain/entities/CashCut.Entity.js';
 import { CashCutStatus } from '../../../domain/enums/cash-cut-status.enum.js';
 import { Money } from '../../../domain/value-objects/money.value-object.js';
 import { CashCutModel, CashCutDoc } from '../models/cash-cut.model.js';
+import { TenantContext } from '../../config/TenantContext.js';
 
 export class MongoCashCutRepository implements CashCutRepository {
   async findById(id: string): Promise<CashCut | null> {
-    const doc = await CashCutModel.findById(id).catch(() => null);
+    const doc = await CashCutModel.findOne({ _id: id, tenantId: TenantContext.tenantId }).catch(() => null);
     return doc ? this.toDomain(doc) : null;
   }
 
   async findOpenByOperator(branchId: string, operatorId: string): Promise<CashCut | null> {
     const doc = await CashCutModel.findOne({
+      tenantId: TenantContext.tenantId,
       branchId,
       operatorId,
       status: CashCutStatus.OPEN,
@@ -20,7 +22,10 @@ export class MongoCashCutRepository implements CashCutRepository {
   }
 
   async findByBranch(branchId: string, status?: CashCutStatus): Promise<CashCut[]> {
-    const filter: Record<string, unknown> = { branchId };
+    const filter: Record<string, unknown> = {
+      tenantId: TenantContext.tenantId,
+      branchId,
+    };
     if (status) filter['status'] = status;
     const docs = await CashCutModel.find(filter).sort({ openedAt: -1 });
     return docs.map((d) => this.toDomain(d));

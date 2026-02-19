@@ -1,22 +1,26 @@
-import { TicketRepository } from '../../../domain/ports/ticket.repository.port.js';
-import { Ticket } from '../../../domain/entities/ticket.entity.js';
+import { TicketRepository } from '../../../domain/ports/TicketRepository.Port.js';
+import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
 import { TicketStatus } from '../../../domain/enums/ticket-status.enum.js';
 import { Money } from '../../../domain/value-objects/money.value-object.js';
+import { TenantContext } from '../../config/TenantContext.js';
 import { TicketModel, TicketDoc } from '../models/ticket.model.js';
 
 export class MongoTicketRepository implements TicketRepository {
   async findById(id: string): Promise<Ticket | null> {
-    const doc = await TicketModel.findById(id).catch(() => null);
+    const doc = await TicketModel.findOne({ _id: id, tenantId: TenantContext.tenantId }).catch(() => null);
     return doc ? this.toDomain(doc) : null;
   }
 
   async findByQrCode(qrCode: string): Promise<Ticket | null> {
-    const doc = await TicketModel.findOne({ qrCode });
+    const doc = await TicketModel.findOne({ qrCode, tenantId: TenantContext.tenantId });
     return doc ? this.toDomain(doc) : null;
   }
 
   async findByBranchAndStatus(branchId: string, status: TicketStatus): Promise<Ticket[]> {
-    const docs = await TicketModel.find({ branchId, status }).sort({ checkIn: -1 });
+    // Check if the requested branch belongs to the current tenant context
+    const tenantId = TenantContext.tenantId;
+
+    const docs = await TicketModel.find({ tenantId, branchId, status }).sort({ checkIn: -1 });
     return docs.map((d) => this.toDomain(d));
   }
 

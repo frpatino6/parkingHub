@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(D:/ParkingHub/scripts/use-node20.cmd npx --prefix D:/ParkingHub/backend tsc --noEmit --project D:/ParkingHub/backend/tsconfig.json)",
-      "Bash(D:/ParkingHub/scripts/use-node20.cmd npm install --prefix D:/ParkingHub/backend bcryptjs jsonwebtoken qrcode express-rate-limit)"
+      "Bash(D:/ParkingHub/scripts/use-node20.cmd npm install --prefix D:/ParkingHub/backend bcryptjs jsonwebtoken qrcode express-rate-limit)",
+      "Bash(python:*)",
+      "Bash(scripts/../../../scripts/use-node20.cmd npx tsc --noEmit)",
+      "Bash(/c/Users/frodr/AppData/Roaming/nvm/v20.19.0/node.exe /c/Users/frodr/AppData/Roaming/nvm/v20.19.0/node_modules/typescript/bin/tsc --noEmit)",
+      "Bash(cmd.exe /c \"D:\\\\ParkingHub\\\\scripts\\\\use-node20.cmd npx tsc --noEmit 2>&1\")",
+      "Bash(cmd.exe /c \"type D:\\\\ParkingHub\\\\scripts\\\\use-node20.cmd\")"
     ]
   }
 }

@@ -1,4 +1,4 @@
-import { PricingConfig } from '../../domain/entities/pricing-config.entity.js';
+import { PricingConfig } from '../../domain/entities/PricingConfig.Entity.js';
 import { PricingMode } from '../../domain/enums/pricing-mode.enum.js';
 import { Money } from '../../domain/value-objects/money.value-object.js';
 

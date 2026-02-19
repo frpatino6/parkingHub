@@ -15,33 +15,34 @@ import { QrCodeServiceImpl } from './infrastructure/services/qrcode.service.js';
 import { PricingEngineService } from './application/services/pricing-engine.service.js';
 
 // ─── Infrastructure: Repositories ─────────────────────────────────────────────
-import { MongoTenantRepository } from './infrastructure/database/repositories/mongo-tenant.repository.js';
-import { MongoBranchRepository } from './infrastructure/database/repositories/mongo-branch.repository.js';
-import { MongoUserRepository } from './infrastructure/database/repositories/mongo-user.repository.js';
-import { MongoTicketRepository } from './infrastructure/database/repositories/mongo-ticket.repository.js';
-import { MongoCashCutRepository } from './infrastructure/database/repositories/mongo-cash-cut.repository.js';
-import { MongoAuditLogRepository } from './infrastructure/database/repositories/mongo-audit-log.repository.js';
-import { MongoPricingConfigRepository } from './infrastructure/database/repositories/mongo-pricing-config.repository.js';
+import { MongoTenantRepository } from './infrastructure/database/repositories/MongoTenant.Repository.js';
+import { MongoBranchRepository } from './infrastructure/database/repositories/MongoBranch.Repository.js';
+import { MongoUserRepository } from './infrastructure/database/repositories/MongoUser.Repository.js';
+import { MongoTicketRepository } from './infrastructure/database/repositories/MongoTicket.Repository.js';
+import { MongoCashCutRepository } from './infrastructure/database/repositories/MongoCashCut.Repository.js';
+import { MongoAuditLogRepository } from './infrastructure/database/repositories/MongoAuditLog.Repository.js';
+import { MongoPricingConfigRepository } from './infrastructure/database/repositories/MongoPricingConfig.Repository.js';
 
 // ─── Application: Use Cases ───────────────────────────────────────────────────
-import { LoginUseCase } from './application/use-cases/auth/login.use-case.js';
-import { CheckInUseCase } from './application/use-cases/ticket/check-in.use-case.js';
-import { CheckOutUseCase } from './application/use-cases/ticket/check-out.use-case.js';
-import { CancelTicketUseCase } from './application/use-cases/ticket/cancel-ticket.use-case.js';
-import { OpenCashCutUseCase } from './application/use-cases/cash-cut/open-cash-cut.use-case.js';
-import { CloseCashCutUseCase } from './application/use-cases/cash-cut/close-cash-cut.use-case.js';
-import { CreateUserUseCase } from './application/use-cases/user/create-user.use-case.js';
-import { CreateBranchUseCase } from './application/use-cases/branch/create-branch.use-case.js';
-import { CreatePricingConfigUseCase } from './application/use-cases/pricing/create-pricing-config.use-case.js';
+import { LoginUseCase } from './application/use-cases/auth/Login.UseCase.js';
+import { CheckInUseCase } from './application/use-cases/ticket/CheckIn.UseCase.js';
+import { CheckOutUseCase } from './application/use-cases/ticket/CheckOut.UseCase.js';
+import { CancelTicketUseCase } from './application/use-cases/ticket/CancelTicket.UseCase.js';
+import { OpenCashCutUseCase } from './application/use-cases/cash-cut/OpenCashCut.UseCase.js';
+import { CloseCashCutUseCase } from './application/use-cases/cash-cut/CloseCashCut.UseCase.js';
+import { CreateUserUseCase } from './application/use-cases/user/CreateUser.UseCase.js';
+import { CreateBranchUseCase } from './application/use-cases/branch/CreateBranch.UseCase.js';
+import { CreatePricingConfigUseCase } from './application/use-cases/pricing/CreatePricingConfig.UseCase.js';
 
 // ─── Infrastructure: HTTP ─────────────────────────────────────────────────────
 import { authMiddleware, requireRole } from './infrastructure/http/middlewares/auth.middleware.js';
-import { AuthController } from './infrastructure/http/controllers/auth.controller.js';
-import { TicketController } from './infrastructure/http/controllers/ticket.controller.js';
-import { CashCutController } from './infrastructure/http/controllers/cash-cut.controller.js';
-import { UserController } from './infrastructure/http/controllers/user.controller.js';
-import { BranchController } from './infrastructure/http/controllers/branch.controller.js';
-import { PricingConfigController } from './infrastructure/http/controllers/pricing-config.controller.js';
+import { tenantContextMiddleware } from './infrastructure/http/middlewares/TenantContext.Middleware.js';
+import { AuthController } from './infrastructure/http/controllers/Auth.Controller.js';
+import { TicketController } from './infrastructure/http/controllers/Ticket.Controller.js';
+import { CashCutController } from './infrastructure/http/controllers/CashCut.Controller.js';
+import { UserController } from './infrastructure/http/controllers/User.Controller.js';
+import { BranchController } from './infrastructure/http/controllers/Branch.Controller.js';
+import { PricingConfigController } from './infrastructure/http/controllers/PricingConfig.Controller.js';
 import { createAuthRoutes } from './infrastructure/http/routes/auth.routes.js';
 import { createTicketRoutes } from './infrastructure/http/routes/ticket.routes.js';
 import { createCashCutRoutes } from './infrastructure/http/routes/cash-cut.routes.js';
@@ -101,18 +102,20 @@ async function bootstrap(): Promise<void> {
   const apiRouter = Router();
 
   apiRouter.use('/auth', createAuthRoutes(authController));
-  apiRouter.use('/tickets', authenticate, operatorOrAdmin, createTicketRoutes(ticketController));
+
+  // Global Tenant Context for all protected routes
+  apiRouter.use(authenticate, tenantContextMiddleware);
+
+  apiRouter.use('/tickets', operatorOrAdmin, createTicketRoutes(ticketController));
   apiRouter.use(
     '/cash-cuts',
-    authenticate,
     requireRole(UserRole.OPERATOR),
     createCashCutRoutes(cashCutController),
   );
-  apiRouter.use('/users', authenticate, adminOnly, createUserRoutes(userController));
-  apiRouter.use('/branches', authenticate, adminOnly, createBranchRoutes(branchController));
+  apiRouter.use('/users', adminOnly, createUserRoutes(userController));
+  apiRouter.use('/branches', adminOnly, createBranchRoutes(branchController));
   apiRouter.use(
     '/pricing-configs',
-    authenticate,
     adminOnly,
     createPricingConfigRoutes(pricingConfigController),
   );

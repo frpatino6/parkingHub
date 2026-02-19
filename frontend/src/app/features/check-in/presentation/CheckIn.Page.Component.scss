@@ -1,0 +1,239 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/typography' as *;
+
+.check-in-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-6;
+}
+
+.check-in-container {
+  width: 100%;
+  max-width: 420px;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: $space-8;
+}
+
+.page-title {
+  font-family: $font-display;
+  font-size: $text-3xl;
+  font-weight: $font-bold;
+  margin: 0 0 $space-2;
+  background: linear-gradient(135deg, $primary-300, $accent-500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-subtitle {
+  margin: 0;
+  color: $neutral-400;
+  font-size: $text-sm;
+}
+
+.check-in-form,
+.success-card {
+  background: rgba($surface-dark-card, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius-2xl;
+  padding: $space-8;
+  box-shadow: $shadow-xl;
+  animation: fadeInUp 0.4s $ease-out-expo both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-group {
+  margin-bottom: $space-5;
+}
+
+.form-label {
+  display: block;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $neutral-300;
+  margin-bottom: $space-2;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: $space-3 $space-4;
+  font-size: $text-base;
+  font-family: inherit;
+  color: $neutral-100;
+  background: rgba($neutral-900, 0.6);
+  border: 1px solid $neutral-700;
+  border-radius: $radius-lg;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: $neutral-500;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.2);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: $error-500;
+  }
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right $space-4 center;
+  padding-right: 2.5rem;
+}
+
+.form-error {
+  display: block;
+  margin-top: $space-2;
+  font-size: $text-xs;
+  color: $error-500;
+}
+
+.error-banner {
+  padding: $space-3 $space-4;
+  background: rgba($error-500, 0.15);
+  border: 1px solid rgba($error-500, 0.4);
+  border-radius: $radius-md;
+  color: #fda4af;
+  font-size: $text-sm;
+  margin-bottom: $space-5;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: $space-3 $space-6;
+  font-family: $font-primary;
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  border-radius: $radius-lg;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &--primary {
+    background: linear-gradient(135deg, $primary-600, $primary-500);
+    color: white;
+    box-shadow: 0 2px 8px rgba($primary-600, 0.4);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, $primary-700, $primary-600);
+      box-shadow: 0 4px 12px rgba($primary-600, 0.5);
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &--full {
+    width: 100%;
+    margin-top: $space-2;
+  }
+}
+
+.btn-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.success-card {
+  text-align: center;
+}
+
+.success-icon {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto $space-4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, $accent-600, $accent-500);
+  border-radius: $radius-full;
+  font-size: 1.5rem;
+  color: white;
+  font-weight: $font-bold;
+  box-shadow: $shadow-glow;
+}
+
+.success-title {
+  font-size: $text-xl;
+  font-weight: $font-semibold;
+  margin: 0 0 $space-2;
+  color: $neutral-100;
+}
+
+.success-plate {
+  font-family: $font-display;
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  letter-spacing: 0.15em;
+  margin: 0 0 $space-1;
+  color: $primary-300;
+}
+
+.success-meta {
+  font-size: $text-sm;
+  color: $neutral-400;
+  margin: 0 0 $space-6;
+}
+
+.qr-wrapper {
+  background: white;
+  padding: $space-4;
+  border-radius: $radius-lg;
+  display: inline-block;
+  margin-bottom: $space-4;
+  box-shadow: $shadow-md;
+}
+
+.qr-image {
+  display: block;
+  width: 180px;
+  height: 180px;
+}
+
+.ticket-id {
+  font-size: $text-xs;
+  color: $neutral-500;
+  margin: 0 0 $space-6;
+}

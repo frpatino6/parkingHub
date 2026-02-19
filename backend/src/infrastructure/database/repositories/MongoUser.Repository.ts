@@ -1,20 +1,24 @@
-import { UserRepository } from '../../../domain/ports/user.repository.port.js';
-import { User } from '../../../domain/entities/user.entity.js';
+import { UserRepository } from '../../../domain/ports/UserRepository.Port.js';
+import { User } from '../../../domain/entities/User.Entity.js';
 import { UserModel, UserDoc } from '../models/user.model.js';
+import { TenantContext } from '../../config/TenantContext.js';
 
 export class MongoUserRepository implements UserRepository {
   async findById(id: string): Promise<User | null> {
-    const doc = await UserModel.findById(id).catch(() => null);
+    const doc = await UserModel.findOne({ _id: id, tenantId: TenantContext.tenantId }).catch(() => null);
     return doc ? this.toDomain(doc) : null;
   }
 
   async findByEmail(email: string): Promise<User | null> {
+    // We assume email is unique across the system for login,
+    // but we can still scope it to tenant if the business rules change.
     const doc = await UserModel.findOne({ email: email.toLowerCase().trim() });
     return doc ? this.toDomain(doc) : null;
   }
 
-  async findByTenantId(tenantId: string): Promise<User[]> {
-    const docs = await UserModel.find({ tenantId });
+  async findByTenantId(tenantId?: string): Promise<User[]> {
+    const finalTenantId = tenantId ?? TenantContext.tenantId;
+    const docs = await UserModel.find({ tenantId: finalTenantId });
     return docs.map((d) => this.toDomain(d));
   }
 

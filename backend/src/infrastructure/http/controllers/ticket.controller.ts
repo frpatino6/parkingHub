@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { CheckInUseCase } from '../../../application/use-cases/ticket/check-in.use-case.js';
-import { CheckOutUseCase } from '../../../application/use-cases/ticket/check-out.use-case.js';
-import { CancelTicketUseCase } from '../../../application/use-cases/ticket/cancel-ticket.use-case.js';
-import { Ticket } from '../../../domain/entities/ticket.entity.js';
+import { CheckInUseCase } from '../../../application/use-cases/ticket/CheckIn.UseCase.js';
+import { CheckOutUseCase } from '../../../application/use-cases/ticket/CheckOut.UseCase.js';
+import { CancelTicketUseCase } from '../../../application/use-cases/ticket/CancelTicket.UseCase.js';
+import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
 import { VehicleType } from '../../../domain/enums/vehicle-type.enum.js';
 import { PaymentMethod } from '../../../domain/enums/payment-method.enum.js';
 

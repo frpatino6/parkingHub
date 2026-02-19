@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { LoginUseCase } from '../../../application/use-cases/auth/login.use-case.js';
+import { LoginUseCase } from '../../../application/use-cases/auth/Login.UseCase.js';
 
 export class AuthController {
   constructor(private readonly loginUseCase: LoginUseCase) {}

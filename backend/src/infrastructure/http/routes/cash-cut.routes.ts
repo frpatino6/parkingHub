@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { CashCutController } from '../controllers/cash-cut.controller.js';
+import { CashCutController } from '../controllers/CashCut.Controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
 
 const closeSchema = z.object({

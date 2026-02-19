@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { OpenCashCutUseCase } from '../../../application/use-cases/cash-cut/open-cash-cut.use-case.js';
-import { CloseCashCutUseCase } from '../../../application/use-cases/cash-cut/close-cash-cut.use-case.js';
-import { CashCut } from '../../../domain/entities/cash-cut.entity.js';
+import { OpenCashCutUseCase } from '../../../application/use-cases/cash-cut/OpenCashCut.UseCase.js';
+import { CloseCashCutUseCase } from '../../../application/use-cases/cash-cut/CloseCashCut.UseCase.js';
+import { CashCut } from '../../../domain/entities/CashCut.Entity.js';
 
 export class CashCutController {
   constructor(
