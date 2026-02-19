@@ -1,0 +1,296 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/typography' as *;
+
+.check-out-page {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-6;
+}
+
+.check-out-container {
+  width: 100%;
+  max-width: 550px;
+}
+
+.shift-warning {
+  background: rgba($warning-600, 0.1);
+  border: 1px solid rgba($warning-500, 0.2);
+  border-radius: $radius-2xl;
+  padding: $space-8;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  margin-bottom: $space-8;
+
+  .warning-icon { font-size: 3rem; margin-bottom: $space-4; }
+  h3 { color: $warning-500; font-size: $text-xl; margin-bottom: $space-2; }
+  p { color: $neutral-400; font-size: $text-sm; margin-bottom: $space-6; }
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: $space-8;
+}
+
+.page-title {
+  font-family: $font-display;
+  font-size: $text-3xl;
+  font-weight: $font-bold;
+  margin: 0 0 $space-2;
+  background: linear-gradient(135deg, $accent-300, $primary-500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-subtitle {
+  margin: 0;
+  color: $neutral-400;
+  font-size: $text-sm;
+}
+
+.search-form,
+.preview-card,
+.success-card {
+  background: rgba($surface-dark-card, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-2xl;
+  padding: $space-8;
+  box-shadow: $shadow-2xl;
+  animation: fadeInUp 0.5s $ease-out-expo both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.input-with-action {
+  display: flex;
+  gap: $space-3;
+
+  .form-input {
+    flex: 1;
+  }
+}
+
+.form-group {
+  margin-bottom: $space-4;
+}
+
+.form-label {
+  display: block;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $neutral-300;
+  margin-bottom: $space-2;
+}
+
+.form-input {
+  width: 100%;
+  padding: $space-3 $space-4;
+  background: rgba($neutral-900, 0.7);
+  border: 1px solid $neutral-700;
+  border-radius: $radius-lg;
+  color: white;
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.2);
+  }
+}
+
+.error-banner {
+  padding: $space-3 $space-4;
+  background: rgba($error-500, 0.1);
+  border: 1px solid rgba($error-500, 0.3);
+  border-radius: $radius-md;
+  color: #fda4af;
+  font-size: $text-sm;
+  margin-bottom: $space-5;
+  text-align: center;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $space-6;
+}
+
+.plate-badge {
+  font-family: $font-display;
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $primary-300;
+  letter-spacing: 0.1em;
+}
+
+.status-badge {
+  padding: $space-1 $space-3;
+  border-radius: $radius-full;
+  font-size: $text-xs;
+  font-weight: $font-bold;
+  text-transform: uppercase;
+
+  &.open {
+    background: rgba($accent-500, 0.1);
+    color: $accent-400;
+  }
+}
+
+.ticket-details {
+  background: rgba($neutral-900, 0.4);
+  padding: $space-5;
+  border-radius: $radius-xl;
+  margin-bottom: $space-6;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: $space-2;
+  font-size: $text-sm;
+
+  .label { color: $neutral-400; }
+  .value { color: $neutral-100; font-weight: $font-medium; }
+}
+
+.detail-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: $space-4 0;
+}
+
+.fee-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .label { font-weight: $font-semibold; color: white; }
+  .amount { 
+    font-size: $text-2xl; 
+    font-weight: $font-bold; 
+    color: $accent-400;
+    text-shadow: 0 0 12px rgba($accent-500, 0.3);
+  }
+}
+
+.payment-methods {
+  margin-bottom: $space-6;
+
+  .section-title {
+    font-size: $text-xs;
+    text-transform: uppercase;
+    color: $neutral-500;
+    letter-spacing: 0.05em;
+    margin-bottom: $space-3;
+  }
+}
+
+.method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-2;
+}
+
+.method-btn {
+  padding: $space-4;
+  background: rgba($neutral-800, 0.5);
+  border: 1px solid $neutral-700;
+  border-radius: $radius-lg;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba($primary-600, 0.2);
+    border-color: $primary-500;
+    transform: translateY(-2px);
+  }
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-3 $space-6;
+  border-radius: $radius-lg;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+
+  &--primary {
+    background: linear-gradient(135deg, $primary-500, $primary-600);
+    color: white;
+    &:hover:not(:disabled) { box-shadow: 0 4px 15px rgba($primary-600, 0.4); transform: translateY(-1px); }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $neutral-400;
+    &:hover { color: white; background: rgba(255, 255, 255, 0.05); }
+  }
+
+  &--full { width: 100%; }
+}
+
+.success-card {
+  text-align: center;
+}
+
+.success-icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  background: $accent-500;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto $space-4;
+  box-shadow: $shadow-glow;
+}
+
+.success-amount {
+  font-size: $text-4xl;
+  font-weight: $font-bold;
+  color: white;
+  margin-bottom: $space-1;
+}
+
+.success-meta {
+  color: $neutral-400;
+  margin-bottom: $space-6;
+}
+
+.summary-box {
+  background: rgba(0, 0, 0, 0.2);
+  padding: $space-4;
+  border-radius: $radius-lg;
+  margin-bottom: $space-6;
+  text-align: left;
+  font-size: $text-sm;
+
+  p { margin: $space-1 0; }
+}
+
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }

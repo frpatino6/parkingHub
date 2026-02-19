@@ -2,7 +2,7 @@
 @use '../../../../styles/typography' as *;
 
 .check-in-page {
-  min-height: 100vh;
+  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,7 +11,21 @@
 
 .check-in-container {
   width: 100%;
-  max-width: 420px;
+  max-width: 450px;
+}
+
+.shift-warning {
+  background: rgba($warning-600, 0.1);
+  border: 1px solid rgba($warning-500, 0.2);
+  border-radius: $radius-2xl;
+  padding: $space-8;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  margin-bottom: $space-8;
+
+  .warning-icon { font-size: 3rem; margin-bottom: $space-4; }
+  h3 { color: $warning-500; font-size: $text-xl; margin-bottom: $space-2; }
+  p { color: $neutral-400; font-size: $text-sm; margin-bottom: $space-6; }
 }
 
 .page-header {

@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "mongodb": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "d:/ParkingHub/backend/node_modules/mongodb-mcp-server/dist/esm/index.js",
+        "--readOnly"
+      ],
+      "env": {
+        "MDB_MCP_CONNECTION_STRING": "mongodb+srv://frpatino6Coffe:s4ntiago@mycoffecluster.yerjpro.mongodb.net/parking-hub?retryWrites=true&w=majority"
+      }
+    }
+  }
+}

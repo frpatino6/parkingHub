@@ -16,11 +16,31 @@ export class MongoTicketRepository implements TicketRepository {
     return doc ? this.toDomain(doc) : null;
   }
 
+  async findActiveByPlate(branchId: string, plate: string): Promise<Ticket | null> {
+    const doc = await TicketModel.findOne({
+      tenantId: TenantContext.tenantId,
+      branchId,
+      plate: plate.toUpperCase().trim(),
+      status: TicketStatus.OPEN,
+    });
+    return doc ? this.toDomain(doc) : null;
+  }
+
   async findByBranchAndStatus(branchId: string, status: TicketStatus): Promise<Ticket[]> {
     // Check if the requested branch belongs to the current tenant context
     const tenantId = TenantContext.tenantId;
 
     const docs = await TicketModel.find({ tenantId, branchId, status }).sort({ checkIn: -1 });
+    return docs.map((d) => this.toDomain(d));
+  }
+
+  async searchByPlate(branchId: string, plate: string): Promise<Ticket[]> {
+    const tenantId = TenantContext.tenantId;
+    const docs = await TicketModel.find({
+      tenantId,
+      branchId,
+      plate: { $regex: plate, $options: 'i' }
+    }).sort({ checkIn: -1 }).limit(20);
     return docs.map((d) => this.toDomain(d));
   }
 

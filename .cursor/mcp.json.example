@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "mongodb": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "d:/ParkingHub/backend/node_modules/mongodb-mcp-server/dist/esm/index.js",
+        "--readOnly"
+      ],
+      "env": {
+        "MDB_MCP_CONNECTION_STRING": "<copiar MONGODB_URI de backend/.env>"
+      }
+    }
+  }
+}

@@ -1,0 +1,122 @@
+@use './variables' as *;
+@use './typography' as *;
+
+// Button Styles
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-3 $space-5;
+  border-radius: $radius-lg;
+  font-weight: $font-semibold;
+  font-size: $text-sm;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: $font-primary;
+
+  .material-icons {
+    font-size: 1.25rem;
+  }
+
+  &--primary {
+    background: linear-gradient(135deg, $primary-600, $primary-500);
+    color: white;
+    box-shadow: 0 4px 12px rgba($primary-600, 0.3);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba($primary-600, 0.4);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  &--ghost {
+    background: rgba($neutral-200, 0.1);
+    color: $neutral-100;
+    border: 1px solid rgba($neutral-200, 0.2);
+
+    &:hover {
+      background: rgba($neutral-200, 0.2);
+    }
+  }
+}
+
+// Glass Card & Table
+.glass-card {
+  background: rgba($surface-dark-card, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba($neutral-700, 0.5);
+  border-radius: $radius-xl;
+  box-shadow: $shadow-lg;
+  overflow: hidden;
+}
+
+// Empty/Error/Loading States
+.state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $space-16 $space-4;
+  text-align: center;
+  background: rgba($surface-dark-card, 0.3);
+  border-radius: $radius-xl;
+  border: 1px dashed rgba($neutral-700, 0.5);
+  min-height: 400px;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .icon {
+    font-size: 4rem;
+    margin-bottom: $space-4;
+    color: $neutral-600;
+  }
+
+  h3 {
+    font-size: $text-xl;
+    font-weight: $font-semibold;
+    color: $neutral-200;
+    margin: 0 0 $space-2;
+  }
+
+  p {
+    color: $neutral-400;
+    margin-bottom: $space-6;
+    max-width: 400px;
+  }
+
+  &.loading {
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba($primary-500, 0.1);
+      border-left-color: $primary-500;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: $space-4;
+    }
+  }
+
+  &.error {
+    .icon { color: $error-500; }
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

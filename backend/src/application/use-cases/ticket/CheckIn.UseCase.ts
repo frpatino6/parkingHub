@@ -7,15 +7,23 @@ import { QrCodeService } from '../../ports/qr-code.service.port.js';
 import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
 import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
+import { CashCutRepository } from '../../../domain/ports/CashCutRepository.Port.js';
+import { DomainError } from '../../../domain/errors/domain-errors.js';
 
 export class CheckInUseCase implements UseCase<CheckInDto, CheckInResult> {
   constructor(
     private readonly ticketRepo: TicketRepository,
+    private readonly cashCutRepo: CashCutRepository,
     private readonly auditLogRepo: AuditLogRepository,
     private readonly qrCodeService: QrCodeService,
   ) {}
 
   async execute(dto: CheckInDto): Promise<CheckInResult> {
+    const cashCut = await this.cashCutRepo.findOpenByOperator(dto.branchId, dto.operatorId);
+    if (!cashCut) {
+      throw new DomainError('Debes abrir tu caja (turno) antes de registrar ingresos.');
+    }
+
     const qrCode = randomUUID();
 
     const ticket = Ticket.createNew({

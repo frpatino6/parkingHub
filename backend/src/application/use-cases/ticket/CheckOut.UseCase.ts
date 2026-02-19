@@ -8,7 +8,7 @@ import { PricingEngineService } from '../../services/pricing-engine.service.js';
 import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
 import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
-import { NotFoundError, ForbiddenError } from '../../../domain/errors/domain-errors.js';
+import { NotFoundError, ForbiddenError, DomainError } from '../../../domain/errors/domain-errors.js';
 
 export class CheckOutUseCase implements UseCase<CheckOutDto, Ticket> {
   constructor(
@@ -20,8 +20,21 @@ export class CheckOutUseCase implements UseCase<CheckOutDto, Ticket> {
   ) {}
 
   async execute(dto: CheckOutDto): Promise<Ticket> {
-    const ticket = await this.ticketRepo.findByQrCode(dto.qrCode);
-    if (!ticket) throw new NotFoundError('Ticket', dto.qrCode);
+    let ticket = await this.ticketRepo.findByQrCode(dto.qrCode);
+
+    // Fallback 1: search by plate
+    if (!ticket) {
+      ticket = await this.ticketRepo.findActiveByPlate(dto.branchId, dto.qrCode);
+    }
+
+    // Fallback 2: search by internal ID (if frontend sends it)
+    if (!ticket) {
+      ticket = await this.ticketRepo.findById(dto.qrCode);
+    }
+
+    if (!ticket) {
+      throw new NotFoundError('Ticket', dto.qrCode);
+    }
 
     if (ticket.tenantId !== dto.tenantId || ticket.branchId !== dto.branchId) {
       throw new ForbiddenError('Ticket does not belong to this branch');
@@ -38,12 +51,14 @@ export class CheckOutUseCase implements UseCase<CheckOutDto, Ticket> {
     ticket.checkout(amount, dto.paymentMethod);
     const saved = await this.ticketRepo.update(ticket);
 
-    // Accumulate sale into the operator's open cash cut (best-effort)
+    // Accumulate sale into the operator's open cash cut
     const cashCut = await this.cashCutRepo.findOpenByOperator(dto.branchId, dto.operatorId);
-    if (cashCut) {
-      cashCut.addSale(amount);
-      await this.cashCutRepo.update(cashCut);
+    if (!cashCut) {
+      throw new DomainError('Debes abrir tu caja (turno) para procesar esta salida.');
     }
+
+    cashCut.addSale(amount, dto.paymentMethod);
+    await this.cashCutRepo.update(cashCut);
 
     await this.auditLogRepo.create(
       new AuditLog({

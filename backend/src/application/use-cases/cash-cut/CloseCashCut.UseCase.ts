@@ -34,6 +34,8 @@ export class CloseCashCutUseCase implements UseCase<CloseCashCutDto, CashCut> {
         entityId: saved.id!,
         metadata: {
           totalSalesCOP: saved.totalSales.amount,
+          totalCashCOP: saved.totalCash.amount,
+          totalElectronicCOP: saved.totalElectronic.amount,
           reportedCashCOP: reportedCash.amount,
           discrepancyCOP: saved.discrepancyCOP,
         },

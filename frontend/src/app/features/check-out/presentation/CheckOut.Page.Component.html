@@ -1,0 +1,125 @@
+<main class="check-out-page">
+  <div class="check-out-container">
+    <header class="page-header">
+      <h1 class="page-title">Salida de Vehículo</h1>
+      <p class="page-subtitle">Escanea el QR o ingresa el código para liquidar el pago</p>
+    </header>
+
+    @if (!bloc.isShiftOpen()) {
+      <div class="shift-warning stagger-item">
+        <div class="warning-icon">⚠️</div>
+        <h3>Turno Cerrado</h3>
+        <p>No puedes registrar salidas sin un turno activo.</p>
+        <button class="btn btn--primary btn--full" routerLink="/cash-cut">
+          Ir a abrir caja
+        </button>
+      </div>
+    }
+
+    @if (bloc.isShiftOpen()) {
+      @if (bloc.status() === 'idle' || bloc.status() === 'searching' || (bloc.status() === 'error' && !bloc.ticket())) {
+        <form class="search-form stagger-item" [formGroup]="searchForm" (ngSubmit)="onSearch()">
+          @if (bloc.status() === 'error' && !bloc.ticket()) {
+            <div class="error-banner">{{ bloc.error() }}</div>
+          }
+
+          <div class="form-group">
+            <label for="qrCode" class="form-label">Código del Ticket / QR</label>
+            <div class="input-with-action">
+              <input
+                id="qrCode"
+                type="text"
+                class="form-input"
+                formControlName="qrCode"
+                placeholder="Ingresa el código..."
+                autocomplete="off"
+              />
+              <button
+                type="submit"
+                class="btn btn--primary"
+                [disabled]="searchForm.invalid || bloc.isSearching()"
+              >
+                @if (bloc.isSearching()) {
+                  <span class="btn-spinner"></span>
+                } @else {
+                  Buscar
+                }
+              </button>
+            </div>
+          </div>
+        </form>
+      }
+
+      @if (bloc.ticket() && (bloc.status() === 'preview' || bloc.isSubmitting() || bloc.status() === 'error')) {
+        <section class="preview-card stagger-item">
+          @if (bloc.status() === 'error') {
+            <div class="error-banner">{{ bloc.error() }}</div>
+          }
+
+          <div class="ticket-header">
+            <span class="plate-badge">{{ bloc.ticket()!.plate }}</span>
+            <span class="status-badge" [class]="bloc.ticket()!.status.toLowerCase()">
+              {{ bloc.ticket()!.status }}
+            </span>
+          </div>
+
+          <div class="ticket-details">
+            <div class="detail-row">
+              <span class="label">Ingreso:</span>
+              <span class="value">{{ formatDate(bloc.ticket()!.checkIn) }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Tiempo:</span>
+              <span class="value">{{ bloc.ticket()!.durationMinutes }} min.</span>
+            </div>
+            <div class="detail-divider"></div>
+            <div class="fee-row">
+              <span class="label">Total a pagar:</span>
+              <span class="amount">{{ bloc.ticket()!.currentAmountCOP | currency:'COP':'$':'1.0-0' }}</span>
+            </div>
+          </div>
+
+          @if (bloc.status() === 'preview' || bloc.isSubmitting() || bloc.status() === 'error') {
+            <div class="payment-methods">
+              <p class="section-title">Selecciona método de pago</p>
+              <div class="method-grid">
+                @for (method of paymentOptions; track method.value) {
+                  <button
+                    type="button"
+                    class="method-btn"
+                    [disabled]="bloc.isSubmitting()"
+                    (click)="onConfirmPayment(method.value)"
+                  >
+                    <span class="method-label">{{ method.label }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+
+          <button type="button" class="btn btn--ghost btn--full" (click)="onReset()">
+            Cancelar
+          </button>
+        </section>
+      }
+    }
+
+    @if (bloc.isSuccess()) {
+      <section class="success-card stagger-item">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">Pago Procesado</h2>
+        <p class="success-amount">{{ bloc.ticket()!.currentAmountCOP | currency:'COP':'$':'1.0-0' }}</p>
+        <p class="success-meta">Salida registrada exitosamente</p>
+        
+        <div class="summary-box">
+          <p><strong>Placa:</strong> {{ bloc.ticket()!.plate }}</p>
+          <p><strong>Recibo:</strong> #{{ bloc.ticket()!.id.slice(-6).toUpperCase() }}</p>
+        </div>
+
+        <button type="button" class="btn btn--primary btn--full" (click)="onReset()">
+          Nueva Salida
+        </button>
+      </section>
+    }
+  </div>
+</main>

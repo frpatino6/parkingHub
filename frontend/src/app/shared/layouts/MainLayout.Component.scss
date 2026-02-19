@@ -1,0 +1,238 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/typography' as *;
+
+$sidebar-width: 280px;
+$transition-speed: 0.3s;
+$ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+:host {
+  display: block;
+}
+
+.layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: $surface-dark-bg;
+}
+
+// ────────────────────────────────────────────────────
+// Hamburger toggle — visible only on mobile
+// ────────────────────────────────────────────────────
+.hamburger-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  position: fixed;
+  top: $space-4;
+  left: $space-4;
+  z-index: 200;
+  width: 44px;
+  height: 44px;
+  padding: $space-2;
+  background: rgba($surface-dark-card, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: background $transition-speed ease;
+
+  &:hover {
+    background: rgba($surface-dark-elevated, 0.9);
+  }
+
+  .hamburger-line {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: $neutral-300;
+    border-radius: 2px;
+    transition: all $transition-speed ease;
+    margin: 0 auto;
+  }
+}
+
+// ────────────────────────────────────────────────────
+// Sidebar
+// ────────────────────────────────────────────────────
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: $sidebar-width;
+  background: rgba($surface-dark-card, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  color: white;
+  z-index: 150;
+  transform: translateX(-100%);
+  transition: transform $transition-speed $ease-smooth;
+  overflow-y: auto;
+
+  &.open {
+    transform: translateX(0);
+  }
+}
+
+// ────────────────────────────────────────────────────
+// Backdrop overlay (mobile)
+// ────────────────────────────────────────────────────
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 140;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// ────────────────────────────────────────────────────
+// Sidebar internals
+// ────────────────────────────────────────────────────
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-6;
+
+  .logo-text {
+    font-family: $font-display;
+    font-size: $text-2xl;
+    font-weight: $font-bold;
+    letter-spacing: -0.02em;
+    .hub { color: $primary-500; }
+  }
+}
+
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius-md;
+  color: $neutral-400;
+  font-size: $text-lg;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0 $space-4;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  text-decoration: none;
+  color: $neutral-400;
+  border-radius: $radius-xl;
+  transition: all 0.2s ease;
+  font-size: $text-sm;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, rgba($primary-600, 0.15), rgba($primary-500, 0.1));
+    color: $primary-400;
+    font-weight: $font-semibold;
+    border: 1px solid rgba($primary-500, 0.2);
+  }
+}
+
+.sidebar-footer {
+  padding: $space-6;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+  margin-bottom: $space-4;
+  .user-name { font-weight: $font-semibold; margin: 0; font-size: $text-sm; }
+  .user-role { font-size: $text-xs; color: $neutral-500; margin: 0; }
+}
+
+.logout-btn {
+  width: 100%;
+  padding: $space-2 $space-4;
+  background: rgba($error-500, 0.1);
+  border: 1px solid rgba($error-500, 0.3);
+  color: $error-400;
+  border-radius: $radius-lg;
+  font-size: $text-xs;
+  font-weight: $font-bold;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba($error-500, 0.2);
+    transform: translateY(-1px);
+  }
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+// ────────────────────────────────────────────────────
+// Desktop (≥ 768px): static sidebar, no hamburger
+// ────────────────────────────────────────────────────
+@media (min-width: 768px) {
+  .hamburger-btn {
+    display: none;
+  }
+
+  .close-btn {
+    display: none;
+  }
+
+  .sidebar-backdrop {
+    display: none;
+  }
+
+  .sidebar {
+    position: static;
+    transform: none;
+    flex-shrink: 0;
+  }
+
+  .content-area {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar-backdrop,
+  .hamburger-btn .hamburger-line {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,56 @@
+<div class="layout-wrapper">
+  <!-- Mobile hamburger -->
+  <button
+    class="hamburger-btn"
+    (click)="toggleSidebar()"
+    [attr.aria-expanded]="sidebarOpen()"
+    aria-label="Menú de navegación"
+  >
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+
+  <!-- Backdrop overlay (mobile only) -->
+  @if (sidebarOpen()) {
+    <div class="sidebar-backdrop" (click)="closeSidebar()"></div>
+  }
+
+  <aside class="sidebar" [class.open]="sidebarOpen()">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-text">Parking<span class="hub">Hub</span></span>
+      </div>
+      <button class="close-btn" (click)="closeSidebar()" aria-label="Cerrar menú">
+        ✕
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (item of navItems(); track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <p class="user-name">{{ user()?.name ?? 'Operario' }}</p>
+        <p class="user-role">{{ user()?.role }}</p>
+      </div>
+      <button class="logout-btn" (click)="onLogout()">
+        Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <main class="content-area">
+    <router-outlet />
+  </main>
+</div>

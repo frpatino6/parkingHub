@@ -1,6 +1,7 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 import { CheckInBloc } from '../application/CheckIn.Bloc';
 import { VehicleType } from '../../../core/domain/enums/VehicleType.enum';
@@ -8,7 +9,7 @@ import { VehicleType } from '../../../core/domain/enums/VehicleType.enum';
 @Component({
   selector: 'app-check-in-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   providers: [CheckInBloc],
   templateUrl: './CheckIn.Page.Component.html',
   styleUrl: './CheckIn.Page.Component.scss',

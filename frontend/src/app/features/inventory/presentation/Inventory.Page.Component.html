@@ -1,0 +1,128 @@
+<div class="inventory-container">
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Inventario de Vehículos</h1>
+      <p class="subtitle">Gestión en tiempo real de vehículos estacionados</p>
+    </div>
+    <button class="btn btn--primary" (click)="loadTickets()" [disabled]="loading()">
+      <span class="material-icons">refresh</span>
+      <span>Actualizar</span>
+    </button>
+  </header>
+
+      <!-- Filters Section -->
+    <div class="filters-bar glass-card">
+      <div class="filter-group">
+        <label for="plateFilter">Buscar Placa</label>
+        <div class="input-wrapper">
+          <span class="material-icons">search</span>
+          <input 
+            type="text" 
+            id="plateFilter" 
+            placeholder="Ej: AAA123" 
+            [ngModel]="filterPlate()" 
+            (ngModelChange)="filterPlate.set($event)"
+            class="form-input"
+          >
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="typeFilter">Tipo de Vehículo</label>
+        <div class="select-wrapper">
+          <span class="material-icons">filter_list</span>
+          <select 
+            id="typeFilter" 
+            [ngModel]="filterType()" 
+            (ngModelChange)="filterType.set($event)"
+            class="form-select"
+          >
+            <option value="">Todos</option>
+            <option value="CAR">Carro</option>
+            <option value="MOTORCYCLE">Moto</option>
+            <option value="BICYCLE">Bicicleta</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  <main class="content-area">
+    @if (loading()) {
+      <div class="state-container loading">
+        <div class="spinner"></div>
+        <p>Cargando inventario...</p>
+      </div>
+    } @else if (error()) {
+      <div class="state-container error">
+        <span class="material-icons icon">error_outline</span>
+        <h3>Ocurrió un error</h3>
+        <p>{{ error() }}</p>
+        <button class="btn btn--ghost" (click)="loadTickets()">Intentar de nuevo</button>
+      </div>
+    } @else if (filteredTickets().length === 0) {
+      <div class="state-container empty">
+        <span class="material-icons icon">directions_car</span>
+        <h3>No se encontraron vehículos</h3>
+        <p>No hay vehículos que coincidan con los filtros o el parqueadero está vacío.</p>
+      </div>
+    } @else {
+      <div class="glass-card table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Vehículo</th>
+              <th>Placa</th>
+              <th>Hora de Ingreso</th>
+              <th>Tiempo Transcurrido</th>
+              <th class="actions-col">Estado / Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ticket of filteredTickets(); track ticket.id) {
+              <tr class="table-row">
+                <td class="col-type">
+                  <div class="vehicle-icon">
+                    <span class="material-icons">
+                      @switch (ticket.vehicleType) {
+                        @case ('CAR') { directions_car }
+                        @case ('MOTORCYCLE') { two_wheeler }
+                        @default { pedal_bike }
+                      }
+                    </span>
+                    <span>{{ ticket.vehicleType }}</span>
+                  </div>
+                </td>
+                <td class="col-plate">
+                  <span class="plate-badge">{{ ticket.plate }}</span>
+                </td>
+                <td class="col-time">
+                  <div class="timestamp">
+                    <span class="material-icons">schedule</span>
+                    {{ ticket.checkIn | date:'shortTime' }}
+                  </div>
+                </td>
+                <td class="col-duration">
+                  <span class="duration-badge" [class.long-stay]="ticket.durationMinutes > 120">
+                    {{ ticket.durationMinutes }} min
+                  </span>
+                </td>
+                <td class="col-actions">
+                  <div class="actions-cell">
+                    <span class="status-indicator active">En Sitio</span>
+                    
+                    @if (auth.user()?.role === 'OPERATOR') {
+                      <button class="btn btn--sm btn--outline-danger" (click)="onCheckOut(ticket)" title="Dar Salida">
+                        <span class="material-icons">logout</span>
+                        Salida
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </main>
+</div>

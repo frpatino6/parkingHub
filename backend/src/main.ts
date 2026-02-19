@@ -27,9 +27,13 @@ import { MongoPricingConfigRepository } from './infrastructure/database/reposito
 import { LoginUseCase } from './application/use-cases/auth/Login.UseCase.js';
 import { CheckInUseCase } from './application/use-cases/ticket/CheckIn.UseCase.js';
 import { CheckOutUseCase } from './application/use-cases/ticket/CheckOut.UseCase.js';
+import { GetTicketByQrUseCase } from './application/use-cases/ticket/GetTicketByQr.UseCase.js';
+import { GetActiveTicketsUseCase } from './application/use-cases/ticket/GetActiveTickets.UseCase.js';
 import { CancelTicketUseCase } from './application/use-cases/ticket/CancelTicket.UseCase.js';
+import { GetTicketsByPlateUseCase } from './application/use-cases/ticket/GetTicketsByPlate.UseCase.js';
 import { OpenCashCutUseCase } from './application/use-cases/cash-cut/OpenCashCut.UseCase.js';
 import { CloseCashCutUseCase } from './application/use-cases/cash-cut/CloseCashCut.UseCase.js';
+import { GetCurrentCashCutUseCase } from './application/use-cases/cash-cut/GetCurrentCashCut.UseCase.js';
 import { CreateUserUseCase } from './application/use-cases/user/CreateUser.UseCase.js';
 import { CreateBranchUseCase } from './application/use-cases/branch/CreateBranch.UseCase.js';
 import { CreatePricingConfigUseCase } from './application/use-cases/pricing/CreatePricingConfig.UseCase.js';
@@ -37,6 +41,7 @@ import { CreatePricingConfigUseCase } from './application/use-cases/pricing/Crea
 // ─── Infrastructure: HTTP ─────────────────────────────────────────────────────
 import { authMiddleware, requireRole } from './infrastructure/http/middlewares/auth.middleware.js';
 import { tenantContextMiddleware } from './infrastructure/http/middlewares/TenantContext.Middleware.js';
+import { requireOpenCashCut } from './infrastructure/http/middlewares/RequireOpenCashCut.Middleware.js';
 import { AuthController } from './infrastructure/http/controllers/Auth.Controller.js';
 import { TicketController } from './infrastructure/http/controllers/Ticket.Controller.js';
 import { CashCutController } from './infrastructure/http/controllers/CashCut.Controller.js';
@@ -70,7 +75,7 @@ async function bootstrap(): Promise<void> {
 
   // ── Use Cases ─────────────────────────────────────────────────────────────
   const loginUseCase = new LoginUseCase(userRepo, hashingService, tokenService);
-  const checkInUseCase = new CheckInUseCase(ticketRepo, auditLogRepo, qrCodeService);
+  const checkInUseCase = new CheckInUseCase(ticketRepo, cashCutRepo, auditLogRepo, qrCodeService);
   const checkOutUseCase = new CheckOutUseCase(
     ticketRepo,
     pricingConfigRepo,
@@ -78,17 +83,33 @@ async function bootstrap(): Promise<void> {
     auditLogRepo,
     pricingEngine,
   );
+  const getTicketByQrUseCase = new GetTicketByQrUseCase(ticketRepo, pricingConfigRepo, pricingEngine);
+  const getActiveTicketsUseCase = new GetActiveTicketsUseCase(ticketRepo);
   const cancelTicketUseCase = new CancelTicketUseCase(ticketRepo, auditLogRepo);
+  const getTicketsByPlateUseCase = new GetTicketsByPlateUseCase(ticketRepo);
   const openCashCutUseCase = new OpenCashCutUseCase(cashCutRepo, auditLogRepo);
   const closeCashCutUseCase = new CloseCashCutUseCase(cashCutRepo, auditLogRepo);
+  const getCurrentCashCutUseCase = new GetCurrentCashCutUseCase(cashCutRepo);
   const createUserUseCase = new CreateUserUseCase(userRepo, auditLogRepo, hashingService);
   const createBranchUseCase = new CreateBranchUseCase(branchRepo, auditLogRepo);
   const createPricingConfigUseCase = new CreatePricingConfigUseCase(pricingConfigRepo, auditLogRepo);
 
   // ── Controllers ───────────────────────────────────────────────────────────
   const authController = new AuthController(loginUseCase);
-  const ticketController = new TicketController(checkInUseCase, checkOutUseCase, cancelTicketUseCase);
-  const cashCutController = new CashCutController(openCashCutUseCase, closeCashCutUseCase);
+  const ticketController = new TicketController(
+    checkInUseCase,
+    checkOutUseCase,
+    getTicketByQrUseCase,
+    getActiveTicketsUseCase,
+
+    cancelTicketUseCase,
+    getTicketsByPlateUseCase,
+  );
+  const cashCutController = new CashCutController(
+    openCashCutUseCase,
+    closeCashCutUseCase,
+    getCurrentCashCutUseCase,
+  );
   const userController = new UserController(createUserUseCase);
   const branchController = new BranchController(createBranchUseCase);
   const pricingConfigController = new PricingConfigController(createPricingConfigUseCase);
@@ -103,13 +124,14 @@ async function bootstrap(): Promise<void> {
 
   apiRouter.use('/auth', createAuthRoutes(authController));
 
+
   // Global Tenant Context for all protected routes
   apiRouter.use(authenticate, tenantContextMiddleware);
 
-  apiRouter.use('/tickets', operatorOrAdmin, createTicketRoutes(ticketController));
+  apiRouter.use('/tickets', operatorOrAdmin, requireOpenCashCut(cashCutRepo), createTicketRoutes(ticketController));
   apiRouter.use(
     '/cash-cuts',
-    requireRole(UserRole.OPERATOR),
+    operatorOrAdmin,
     createCashCutRoutes(cashCutController),
   );
   apiRouter.use('/users', adminOnly, createUserRoutes(userController));

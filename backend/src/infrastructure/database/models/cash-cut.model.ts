@@ -10,6 +10,8 @@ interface ICashCutDoc {
   closedAt?: Date;
   /** Running total of PAID ticket amounts (integer COP) */
   totalSalesCOP: number;
+  totalCashCOP: number;
+  totalElectronicCOP: number;
   /** Cash reported by operator at close (integer COP) */
   reportedCashCOP?: number;
   /** Signed: reportedCash - totalSales; positive = surplus, negative = deficit */
@@ -32,6 +34,8 @@ const cashCutSchema = new Schema<ICashCutDoc>(
     openedAt: { type: Date, required: true },
     closedAt: { type: Date },
     totalSalesCOP: { type: Number, required: true, default: 0 },
+    totalCashCOP: { type: Number, required: true, default: 0 },
+    totalElectronicCOP: { type: Number, required: true, default: 0 },
     reportedCashCOP: { type: Number },
     discrepancyCOP: { type: Number },
   },

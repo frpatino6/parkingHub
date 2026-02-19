@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { CheckInUseCase } from '../../../application/use-cases/ticket/CheckIn.UseCase.js';
 import { CheckOutUseCase } from '../../../application/use-cases/ticket/CheckOut.UseCase.js';
+import { GetTicketByQrUseCase } from '../../../application/use-cases/ticket/GetTicketByQr.UseCase.js';
+import { GetActiveTicketsUseCase } from '../../../application/use-cases/ticket/GetActiveTickets.UseCase.js';
 import { CancelTicketUseCase } from '../../../application/use-cases/ticket/CancelTicket.UseCase.js';
+import { GetTicketsByPlateUseCase } from '../../../application/use-cases/ticket/GetTicketsByPlate.UseCase.js';
 import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
 import { VehicleType } from '../../../domain/enums/vehicle-type.enum.js';
 import { PaymentMethod } from '../../../domain/enums/payment-method.enum.js';
@@ -10,8 +13,50 @@ export class TicketController {
   constructor(
     private readonly checkInUseCase: CheckInUseCase,
     private readonly checkOutUseCase: CheckOutUseCase,
+    private readonly getTicketByQrUseCase: GetTicketByQrUseCase,
+    private readonly getActiveTicketsUseCase: GetActiveTicketsUseCase,
     private readonly cancelTicketUseCase: CancelTicketUseCase,
+    private readonly getTicketsByPlateUseCase: GetTicketsByPlateUseCase,
   ) {}
+
+  getByQr = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const result = await this.getTicketByQrUseCase.execute({
+        tenantId: req.auth!.tenantId,
+        branchId: req.auth!.branchId!,
+        qrCode: req.params['qrCode'] as string,
+      });
+      res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  getActive = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const tickets = await this.getActiveTicketsUseCase.execute();
+      res.json(tickets.map(t => ({
+        ...this.toTicketResponse(t),
+        durationMinutes: t.getDurationMinutes()
+      })));
+    } catch (err) {
+      next(err);
+    }
+  };
+
+
+  getHistory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const plate = req.query.plate as string;
+      const tickets = await this.getTicketsByPlateUseCase.execute({ plate });
+      res.json(tickets.map(t => ({
+        ...this.toTicketResponse(t),
+        durationMinutes: t.getDurationMinutes()
+      })));
+    } catch (err) {
+      next(err);
+    }
+  };
 
   checkIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {

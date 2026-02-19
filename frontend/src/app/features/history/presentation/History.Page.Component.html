@@ -1,0 +1,134 @@
+<div class="inventory-container">
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Historial de Tickets</h1>
+      <p class="subtitle">Consulta de movimientos y reimpresiones</p>
+    </div>
+  </header>
+
+  <!-- Filters Section -->
+  <div class="filters-bar glass-card">
+    <div class="filter-group" style="flex: 2;">
+      <label for="plateSearch">Buscar por Placa</label>
+      <div class="input-wrapper">
+        <span class="material-icons">search</span>
+        <input 
+          type="text" 
+          id="plateSearch" 
+          placeholder="Ingrese placa..." 
+          [ngModel]="searchPlate()" 
+          (ngModelChange)="searchPlate.set($event)"
+          (keyup.enter)="loadHistory()"
+          class="form-input"
+        >
+      </div>
+    </div>
+    
+    <div class="filter-actions" style="display: flex; align-items: flex-end;">
+      <button class="btn btn--primary" (click)="loadHistory()" [disabled]="loading()">
+        <span class="material-icons">search</span>
+        <span>Buscar</span>
+      </button>
+    </div>
+  </div>
+
+  <main class="content-area">
+    @if (loading()) {
+      <div class="state-container loading">
+        <div class="spinner"></div>
+        <p>Cargando historial...</p>
+      </div>
+    } @else if (error()) {
+      <div class="state-container error">
+        <span class="material-icons icon">error_outline</span>
+        <h3>Ocurrió un error</h3>
+        <p>{{ error() }}</p>
+        <button class="btn btn--ghost" (click)="loadHistory()">Intentar de nuevo</button>
+      </div>
+    } @else if (tickets().length === 0) {
+      <div class="state-container empty">
+        <span class="material-icons icon">history</span>
+        <h3>Sin Resultados</h3>
+        <p>No se encontraron tickets con los criterios de búsqueda.</p>
+      </div>
+    } @else {
+      <div class="glass-card table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Vehículo</th>
+              <th>Placa</th>
+              <th>Ingreso</th>
+              <th>Salida</th>
+              <th>Estado</th>
+              <th>Monto</th>
+              <th class="actions-col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ticket of tickets(); track ticket.id) {
+              <tr class="table-row">
+                <td class="col-type">
+                  <div class="vehicle-icon">
+                    <span class="material-icons">
+                      @switch (ticket.vehicleType) {
+                        @case ('CAR') { directions_car }
+                        @case ('MOTORCYCLE') { two_wheeler }
+                        @default { pedal_bike }
+                      }
+                    </span>
+                    <span>{{ ticket.vehicleType }}</span>
+                  </div>
+                </td>
+                <td class="col-plate">
+                  <span class="plate-badge">{{ ticket.plate }}</span>
+                </td>
+                <td class="col-time">
+                  <div class="timestamp">
+                    <span class="material-icons">login</span>
+                    {{ ticket.checkIn | date:'short' }}
+                  </div>
+                </td>
+                <td class="col-time">
+                  @if (ticket.checkOut) {
+                    <div class="timestamp">
+                      <span class="material-icons">logout</span>
+                      {{ ticket.checkOut | date:'short' }}
+                    </div>
+                  } @else {
+                    <span class="text-neutral-500">-</span>
+                  }
+                </td>
+                <td>
+                  <span class="status-badge" [class]="ticket.status.toLowerCase()">
+                    {{ ticket.status }}
+                  </span>
+                </td>
+                <td>
+                  @if (ticket.amountCOP) {
+                    <span class="amount">${{ ticket.amountCOP | number }}</span>
+                  } @else {
+                    -
+                  }
+                </td>
+                <td class="col-actions">
+                  <div class="actions-cell">
+                    <button class="btn btn--sm btn--ghost" (click)="onReprintEntry(ticket)" title="Reimprimir Entrada">
+                      <span class="material-icons">print</span>
+                    </button>
+                    
+                    @if (ticket.status === 'PAID') {
+                      <button class="btn btn--sm btn--ghost" (click)="onReprintReceipt(ticket)" title="Reimprimir Recibo">
+                        <span class="material-icons">receipt</span>
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </main>
+</div>

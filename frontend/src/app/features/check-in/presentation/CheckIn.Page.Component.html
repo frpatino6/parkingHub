@@ -5,6 +5,17 @@
       <p class="page-subtitle">Captura la placa y tipo de vehículo para generar el ticket</p>
     </header>
 
+    @if (!bloc.isShiftOpen()) {
+      <div class="shift-warning stagger-item">
+        <div class="warning-icon">⚠️</div>
+        <h3>Turno Cerrado</h3>
+        <p>No puedes registrar ingresos sin un turno activo.</p>
+        <button class="btn btn--primary btn--full" routerLink="/cash-cut">
+          Ir a abrir caja
+        </button>
+      </div>
+    }
+
     @if (bloc.isSuccess()) {
       <section class="success-card stagger-item">
         <div class="success-icon">✓</div>
@@ -22,7 +33,7 @@
           Nuevo ingreso
         </button>
       </section>
-    } @else {
+    } @else if (bloc.isShiftOpen()) {
       <form class="check-in-form stagger-item" [formGroup]="form" (ngSubmit)="onSubmit()">
         @if (bloc.error()) {
           <div class="error-banner" role="alert">

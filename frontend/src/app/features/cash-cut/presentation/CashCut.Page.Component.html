@@ -1,0 +1,175 @@
+<main class="cash-cut-page">
+  <div class="cash-cut-container">
+    <header class="page-header">
+      <div class="page-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2" /><path d="M12 4v16" /><path d="M2 12h20" />
+          <circle cx="7" cy="8" r="1" fill="currentColor" /><circle cx="17" cy="16" r="1" fill="currentColor" />
+        </svg>
+      </div>
+      <h1 class="page-title">Cierre de Caja</h1>
+      <p class="page-subtitle">Gestiona tu turno y reporta las ventas del día</p>
+    </header>
+
+    <!-- Loading -->
+    @if (bloc.isLoading()) {
+      <div class="state-card loading-state">
+        <span class="spinner"></span>
+        <p>Cargando información del turno...</p>
+      </div>
+    }
+
+    <!-- Error (no cash cut) -->
+    @if (bloc.status() === 'error' && !bloc.cashCut()) {
+      <div class="error-banner" role="alert">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" /></svg>
+        {{ bloc.error() }}
+      </div>
+    }
+
+    <!-- No active turn -->
+    @if (bloc.isNoActive() || (bloc.status() === 'submitting' && !bloc.cashCut()) || (bloc.status() === 'error' && !bloc.cashCut())) {
+      <div class="state-card no-active-card">
+        <div class="empty-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        </div>
+        <h2>No tienes un turno abierto</h2>
+        <p>Para registrar ingresos y salidas, primero debes abrir tu caja.</p>
+        <button type="button" class="btn btn--primary btn--full" (click)="onOpenTurn()" [disabled]="bloc.isSubmitting()">
+          @if (bloc.isSubmitting()) {
+            <span class="btn-spinner"></span>
+            Abriendo...
+          } @else {
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 9.9-1" /></svg>
+            Abrir Turno
+          }
+        </button>
+      </div>
+    }
+
+    <!-- Active turn -->
+    @if (bloc.cashCut(); as item) {
+      @if (bloc.status() === 'idle' || bloc.status() === 'error' || (bloc.status() === 'submitting' && item.status === 'OPEN')) {
+        <section class="state-card cash-cut-card">
+          @if (bloc.status() === 'error') {
+            <div class="error-banner">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" /></svg>
+              {{ bloc.error() }}
+            </div>
+          }
+
+          <div class="turn-header">
+            <div class="status-badge">
+              <span class="pulse-dot"></span>
+              Turno Activo
+            </div>
+            <time class="opened-at">{{ formatDate(item.openedAt) }}</time>
+          </div>
+
+          <!-- Hero stat -->
+          <div class="hero-stat">
+            <span class="hero-label">Ventas Totales</span>
+            <span class="hero-value">{{ (item.totalSalesCOP || 0) | currency:'COP':'$':'1.0-0' }}</span>
+          </div>
+
+          <!-- Breakdown -->
+          <div class="breakdown-grid">
+            <div class="breakdown-item">
+              <div class="breakdown-icon cash">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2" /><circle cx="12" cy="12" r="3" /><path d="M2 10h2" /><path d="M20 10h2" /></svg>
+              </div>
+              <div class="breakdown-info">
+                <span class="breakdown-label">Efectivo</span>
+                <span class="breakdown-value">{{ (item.totalCashCOP || 0) | currency:'COP':'$':'1.0-0' }}</span>
+              </div>
+            </div>
+            <div class="breakdown-item">
+              <div class="breakdown-icon electronic">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
+              </div>
+              <div class="breakdown-info">
+                <span class="breakdown-label">Electrónico</span>
+                <span class="breakdown-value">{{ (item.totalElectronicCOP || 0) | currency:'COP':'$':'1.0-0' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Close form -->
+          <form class="close-form" [formGroup]="closeForm" (ngSubmit)="onCloseTurn()">
+            <div class="form-group">
+              <label for="reportedCash" class="form-label">Efectivo en Caja (COP)</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">$</span>
+                <input
+                  id="reportedCash"
+                  type="number"
+                  class="form-input"
+                  formControlName="reportedCash"
+                  placeholder="0"
+                />
+              </div>
+              <p class="input-hint">Ingresa el total de dinero físico contado en caja.</p>
+            </div>
+
+            <button type="submit" class="btn btn--danger btn--full" [disabled]="closeForm.invalid || bloc.isSubmitting()">
+              @if (bloc.isSubmitting()) {
+                <span class="btn-spinner"></span>
+                Cerrando...
+              } @else {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                Cerrar Caja y Finalizar Turno
+              }
+            </button>
+          </form>
+        </section>
+      }
+    }
+
+    <!-- Success -->
+    @if (bloc.isSuccess()) {
+      <section class="state-card success-card">
+        <div class="success-badge">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+        </div>
+        <h2 class="success-title">Turno Cerrado Exitosamente</h2>
+        <p class="success-subtitle">Resumen del cierre de caja</p>
+
+        <div class="summary-card">
+          <div class="summary-row">
+            <span>Ventas del sistema</span>
+            <strong>{{ bloc.cashCut()!.totalSalesCOP | currency:'COP':'$':'1.0-0' }}</strong>
+          </div>
+          <div class="summary-row">
+            <span>En efectivo</span>
+            <strong>{{ bloc.cashCut()!.totalCashCOP | currency:'COP':'$':'1.0-0' }}</strong>
+          </div>
+          <div class="summary-row">
+            <span>Electrónico</span>
+            <strong>{{ bloc.cashCut()!.totalElectronicCOP | currency:'COP':'$':'1.0-0' }}</strong>
+          </div>
+          <div class="summary-row">
+            <span>Reportado por operario</span>
+            <strong>{{ bloc.cashCut()!.reportedCashCOP | currency:'COP':'$':'1.0-0' }}</strong>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-row discrepancy"
+               [class.negative]="bloc.cashCut()!.discrepancyCOP! < 0"
+               [class.zero]="bloc.cashCut()!.discrepancyCOP! === 0">
+            <span>Diferencia</span>
+            <strong>{{ bloc.cashCut()!.discrepancyCOP | currency:'COP':'$':'1.0-0' }}</strong>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn--primary btn--full" (click)="onReset()">
+          Entendido
+        </button>
+      </section>
+    }
+  </div>
+</main>

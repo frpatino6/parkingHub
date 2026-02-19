@@ -7,6 +7,8 @@ import { environment } from '../environments/environment';
 import { API_BASE_URL } from './core/infrastructure/tokens/api.config';
 import { TicketRepositoryPort } from './core/domain/ports/TicketRepository.Port';
 import { HttpTicketRepository } from './core/infrastructure/http/HttpTicket.Repository';
+import { CashCutRepositoryPort } from './core/domain/ports/CashCutRepository.Port';
+import { HttpCashCutRepository } from './core/infrastructure/http/HttpCashCut.Repository';
 import { authInterceptor } from './core/infrastructure/http/AuthInterceptor';
 
 export const appConfig: ApplicationConfig = {
@@ -16,5 +18,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     { provide: API_BASE_URL, useValue: environment.apiUrl },
     { provide: TicketRepositoryPort, useClass: HttpTicketRepository },
+    { provide: CashCutRepositoryPort, useClass: HttpCashCutRepository },
   ],
 };

@@ -29,7 +29,7 @@ export function authMiddleware(tokenService: TokenService) {
 
 export function requireRole(...roles: UserRole[]) {
   return (req: Request, res: Response, next: NextFunction): void => {
-    if (!req.auth || !roles.includes(req.auth.role)) {
+    if (!req.auth || !roles.includes(req.auth.role as UserRole)) {
       res.status(403).json({ error: 'Insufficient permissions' });
       return;
     }

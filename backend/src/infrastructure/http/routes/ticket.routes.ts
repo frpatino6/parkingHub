@@ -11,7 +11,7 @@ const checkInSchema = z.object({
 });
 
 const checkOutSchema = z.object({
-  qrCode: z.string().uuid(),
+  qrCode: z.string().min(1),
   paymentMethod: z.nativeEnum(PaymentMethod),
 });
 
@@ -21,6 +21,12 @@ const cancelSchema = z.object({
 
 export function createTicketRoutes(controller: TicketController): Router {
   const router = Router();
+  // GET /api/tickets/qr/:qrCode → get ticket info & current fee
+  router.get('/qr/:qrCode', controller.getByQr);
+  // GET /api/tickets/active     → get all active tickets for current branch
+  router.get('/active', controller.getActive);
+  // GET /api/tickets?plate=XYZ → search history
+  router.get('/', controller.getHistory);
   // POST /api/tickets          → check-in
   router.post('/', validate(checkInSchema), controller.checkIn);
   // POST /api/tickets/checkout → check-out (by QR)

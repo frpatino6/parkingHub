@@ -1,6 +1,7 @@
 import { Money } from '../value-objects/money.value-object.js';
 import { CashCutStatus } from '../enums/cash-cut-status.enum.js';
 import { ValidationError } from '../errors/domain-errors.js';
+import { PaymentMethod } from '../enums/payment-method.enum.js';
 
 export interface CashCutProps {
   id?: string;
@@ -10,12 +11,16 @@ export interface CashCutProps {
   status: CashCutStatus;
   openedAt: Date;
   closedAt?: Date;
-  /** Running sum of all PAID ticket amounts during this period */
+  /** Legacy: Running sum of all PAID ticket amounts during this period */
   totalSales: Money;
+  /** Running sum of CASH payments */
+  totalCash: Money;
+  /** Running sum of ELECTRONIC payments (card, qr, etc) */
+  totalElectronic: Money;
   /** Cash amount reported by operator at close time */
   reportedCash?: Money;
   /**
-   * Signed difference: reportedCash.amount - totalSales.amount (COP).
+   * Signed difference: reportedCash.amount - totalCash.amount (COP).
    * Positive = surplus, negative = deficit.
    */
   discrepancyCOP?: number;
@@ -45,7 +50,9 @@ export class CashCut {
       ...params,
       status: CashCutStatus.OPEN,
       openedAt: new Date(),
-      totalSales: Money.zero(),
+      totalSales: Money.zero(), 
+      totalCash: Money.zero(),
+      totalElectronic: Money.zero(),
     });
   }
 
@@ -57,6 +64,8 @@ export class CashCut {
   get openedAt(): Date { return this._props.openedAt; }
   get closedAt(): Date | undefined { return this._props.closedAt; }
   get totalSales(): Money { return this._props.totalSales; }
+  get totalCash(): Money { return this._props.totalCash; }
+  get totalElectronic(): Money { return this._props.totalElectronic; }
   get reportedCash(): Money | undefined { return this._props.reportedCash; }
   get discrepancyCOP(): number | undefined { return this._props.discrepancyCOP; }
   get createdAt(): Date | undefined { return this._props.createdAt; }
@@ -66,12 +75,20 @@ export class CashCut {
     return this._props.status === CashCutStatus.OPEN;
   }
 
-  /** Accumulates a paid ticket's amount into totalSales. */
-  addSale(amount: Money): void {
+  /** Accumulates a paid ticket's amount into totalSales and specific method counter. */
+  addSale(amount: Money, method: PaymentMethod): void {
     if (!this.isOpen()) {
       throw new ValidationError('Cannot add sales to a closed cash cut');
     }
+    // Update legacy Total
     this._props.totalSales = this._props.totalSales.add(amount);
+
+    if (method === PaymentMethod.EFECTIVO) {
+      this._props.totalCash = this._props.totalCash.add(amount);
+    } else {
+      this._props.totalElectronic = this._props.totalElectronic.add(amount);
+    }
+    
     this._props.updatedAt = new Date();
   }
 
@@ -86,7 +103,8 @@ export class CashCut {
     this._props.status = CashCutStatus.CLOSED;
     this._props.closedAt = new Date();
     this._props.reportedCash = reportedCash;
-    this._props.discrepancyCOP = reportedCash.amount - this._props.totalSales.amount;
+    // Calculate discrepancy ONLY against CASH sales
+    this._props.discrepancyCOP = reportedCash.amount - this._props.totalCash.amount;
     this._props.updatedAt = new Date();
   }
 }
