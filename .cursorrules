@@ -1,0 +1,88 @@
+# ParkingHub — AI Agent Rules
+# ═══════════════════════════════════════════════════════════════════
+# This file is the MASTER configuration for all AI coding assistants.
+# All agents MUST read and follow these rules before writing any code.
+# ═══════════════════════════════════════════════════════════════════
+
+## ⚠️ MANDATORY: Read Reference Manuals Before Coding
+
+Before writing ANY code, you MUST consult these manuals in `.agent-skills/`:
+- `project-context.md` — MVP scope (Check-in/out, Pricing, Cash Cut), Vision.
+- `angular-expert.md` — Angular 19+, **BLoC pattern**, signals, control flow.
+- `node-best-practices.md` — Node.js/Express, **Pricing Engine (Backend Only)**, JWT.
+- `mongodb-optimization.md` — Schema design, multi-tenant isolation, **AuditLogs**.
+- `clean-architecture-patterns.md` — Layers, DI, **Strict Decoupling**.
+- `professional-web-design.md` — Design tokens, accessibility, dark mode.
+
+---
+
+## 🌎 Multi-Tenant & Branch Enforcement
+
+### Strict Isolation
+- **ALL** queries and mutations MUST include `tenantId`.
+- **ALL** branch-specific data MUST include `branchId`.
+- **tenantId** MUST be extracted from the JWT token. NEVER trust it from request bodies.
+- **Tenant Context**: Use the `TenantContext` (AsyncLocalStorage) pattern.
+
+---
+
+## 💎 Project Patterns (ParkingHub Strict)
+
+### Naming Conventions (PascalCase Files)
+- **ALL** class-based files MUST use `PascalCase`.
+  - ✅ `RegisterCheckIn.UseCase.ts`
+  - ✅ `ParkingList.Bloc.ts`
+  - ✅ `User.Entity.ts`
+- **Variables & Functions**: `camelCase`.
+
+### Pricing Engine
+- **MANDATORY**: All pricing calculations must occur in the **Backend**.
+- Frontend only displays results; it never calculates totals, fractions, or grace periods.
+
+### Security
+- **RBAC Roles**: `SUPER_ADMIN`, `PARKING_ADMIN`, `OPERATOR`.
+
+### Audit Logs
+- Every critical action (manual opening, cancellation, price override) MUST be logged in `AuditLogs`.
+
+---
+
+## Architecture Enforcement
+
+### Clean Architecture — STRICT
+- **ZERO** framework dependencies in the Domain layer.
+- **Use Case Isolation**: Use Cases must not know MongoDB or Express exist.
+- **Dependency Inversion**: Use interfaces (ports) for repositories.
+
+---
+
+## Frontend Standards (Angular 19+)
+
+- **State Management**: Use the **BLoC** pattern.
+- **Standalone components ONLY**.
+- **ChangeDetectionStrategy.OnPush** on ALL components.
+- **Signals** for state; **RxJS** for async streams.
+- **New control flow**: `@if`, `@for`, `@switch`.
+
+---
+
+## Code Quality
+
+- **ESLint** + **Prettier**.
+- **No `console.log`** — use the project logger.
+- **No `any` type**.
+- **File naming**: `PascalCase` matching the class/component name.
+- **One export per file**.
+- **Tests required** for Use Cases and Entities.
+
+---
+
+## Node.js Version (nvm-windows)
+- Project requires **Node 20+**. Use wrapper: `scripts\use-node20.cmd <command>` (PATH not updated by `nvm use` in same shell).
+- See `.nvmrc` and `CLAUDE.md` for details.
+
+---
+
+## Commit Messages (Conventional Commits)
+- Format: `<type>(<scope>): <description>`
+- Scopes: `frontend`, `backend`, `shared`, `db`, `infra`, `docs`.

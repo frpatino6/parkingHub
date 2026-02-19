@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(D:/ParkingHub/scripts/use-node20.cmd npx --prefix D:/ParkingHub/backend tsc --noEmit --project D:/ParkingHub/backend/tsconfig.json)",
+      "Bash(D:/ParkingHub/scripts/use-node20.cmd npm install --prefix D:/ParkingHub/backend bcryptjs jsonwebtoken qrcode express-rate-limit)"
+    ]
+  }
+}

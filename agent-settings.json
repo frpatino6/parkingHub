@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "projectName": "ParkingHub",
+  "description": "AI agent configuration for context-aware skill routing",
+
+  "skillsDirectory": ".agent-skills",
+  "skillManuals": {
+    "angular-expert": {
+      "file": ".agent-skills/angular-expert.md",
+      "description": "Angular 19+ patterns, standalone components, signals, DI, routing, testing",
+      "priority": 1
+    },
+    "node-best-practices": {
+      "file": ".agent-skills/node-best-practices.md",
+      "description": "Node.js/Express production patterns, error handling, security, logging",
+      "priority": 1
+    },
+    "mongodb-optimization": {
+      "file": ".agent-skills/mongodb-optimization.md",
+      "description": "MongoDB schema design, indexing (ESR), aggregation, Mongoose configuration",
+      "priority": 2
+    },
+    "clean-architecture-patterns": {
+      "file": ".agent-skills/clean-architecture-patterns.md",
+      "description": "Clean Architecture layers, dependency rule, DI, ports & adapters",
+      "priority": 1
+    },
+    "professional-web-design": {
+      "file": ".agent-skills/professional-web-design.md",
+      "description": "Design tokens, color palette, typography, animations, accessibility, dark mode",
+      "priority": 2
+    }
+  },
+
+  "contextRouting": {
+    "rules": [
+      {
+        "name": "Frontend Context",
+        "description": "Activates Angular and Design skills when editing frontend files",
+        "match": {
+          "pathPatterns": [
+            "frontend/**/*.ts",
+            "frontend/**/*.html",
+            "frontend/**/*.scss",
+            "frontend/**/*.css",
+            "frontend/**/*.spec.ts"
+          ]
+        },
+        "activateSkills": [
+          "angular-expert",
+          "professional-web-design",
+          "clean-architecture-patterns"
+        ],
+        "focusSections": {
+          "clean-architecture-patterns": ["Section 5: Frontend Layer Structure", "Section 6: Use Case Pattern"]
+        }
+      },
+      {
+        "name": "Backend Context",
+        "description": "Activates Node.js and MongoDB skills when editing backend files",
+        "match": {
+          "pathPatterns": [
+            "backend/**/*.ts",
+            "backend/**/*.js",
+            "backend/**/*.spec.ts"
+          ]
+        },
+        "activateSkills": [
+          "node-best-practices",
+          "mongodb-optimization",
+          "clean-architecture-patterns"
+        ],
+        "focusSections": {
+          "clean-architecture-patterns": ["Section 4: Backend Layer Structure", "Section 6: Use Case Pattern", "Section 7: Composition Root"]
+        }
+      },
+      {
+        "name": "Database Context",
+        "description": "Activates MongoDB skill specifically for schema and migration files",
+        "match": {
+          "pathPatterns": [
+            "backend/src/infrastructure/database/**",
+            "**/*.model.ts",
+            "**/*.schema.ts",
+            "**/migrations/**"
+          ]
+        },
+        "activateSkills": [
+          "mongodb-optimization",
+          "clean-architecture-patterns"
+        ]
+      },
+      {
+        "name": "Styling Context",
+        "description": "Activates Design skill for style files",
+        "match": {
+          "pathPatterns": [
+            "**/*.scss",
+            "**/*.css",
+            "frontend/src/styles/**"
+          ]
+        },
+        "activateSkills": [
+          "professional-web-design"
+        ]
+      },
+      {
+        "name": "Root / Config Context",
+        "description": "Activates architecture skill for root-level configuration",
+        "match": {
+          "pathPatterns": [
+            "*.json",
+            "*.yaml",
+            "*.yml",
+            "docker-compose.*",
+            "Dockerfile*",
+            ".env*"
+          ]
+        },
+        "activateSkills": [
+          "clean-architecture-patterns"
+        ]
+      }
+    ],
+
+    "defaultSkills": ["clean-architecture-patterns"],
+    "alwaysActive": ["clean-architecture-patterns"]
+  },
+
+  "enforcement": {
+    "architectureBoundaries": {
+      "enabled": true,
+      "rules": [
+        {
+          "name": "Domain isolation",
+          "description": "Domain layer must not import from application or infrastructure",
+          "source": ["**/domain/**"],
+          "forbiddenImports": ["**/application/**", "**/infrastructure/**"]
+        },
+        {
+          "name": "Application isolation",
+          "description": "Application layer must not import from infrastructure",
+          "source": ["**/application/**"],
+          "forbiddenImports": ["**/infrastructure/**"]
+        }
+      ]
+    },
+    "requiredPatternsCheck": true,
+    "noAnyType": true,
+    "noConsoleLog": true
+  },
+
+  "codeGeneration": {
+    "preferredLanguage": "TypeScript",
+    "strictMode": true,
+    "fileNamingConvention": "kebab-case",
+    "testFramework": {
+      "frontend": "jest",
+      "backend": "jest"
+    },
+    "commitConvention": "conventional-commits",
+    "conventionalScopes": ["frontend", "backend", "shared", "db", "infra", "docs"]
+  }
+}
