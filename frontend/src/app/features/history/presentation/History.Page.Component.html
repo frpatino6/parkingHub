@@ -30,7 +30,7 @@
     @if (activeTab() === 'tickets') {
       <!-- Filters Section -->
       <div class="filters-bar glass-card">
-        <div class="filter-group" style="flex: 2;">
+        <div class="filter-group filter-group--grow">
           <label for="plateSearch">Buscar por Placa</label>
           <div class="input-wrapper">
             <span class="material-icons">search</span>
@@ -45,8 +45,7 @@
             >
           </div>
         </div>
-
-        <div class="filter-actions" style="display: flex; align-items: flex-end; gap: 8px;">
+        <div class="filter-actions">
           <button class="btn btn--primary" (click)="onSearch()" [disabled]="loading()">
             <span class="material-icons">search</span>
             <span>Buscar</span>
