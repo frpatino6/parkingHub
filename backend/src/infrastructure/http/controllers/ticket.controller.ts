@@ -6,7 +6,7 @@ import { GetActiveTicketsUseCase } from '../../../application/use-cases/ticket/G
 import { CancelTicketUseCase } from '../../../application/use-cases/ticket/CancelTicket.UseCase.js';
 import { GetTicketsByPlateUseCase } from '../../../application/use-cases/ticket/GetTicketsByPlate.UseCase.js';
 import { GetTicketsPaginatedUseCase } from '../../../application/use-cases/ticket/GetTicketsPaginated.UseCase.js';
-import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
+import { Ticket } from '../../../domain/entities/ticket.entity.js';
 import { VehicleType } from '../../../domain/enums/vehicle-type.enum.js';
 import { PaymentMethod } from '../../../domain/enums/payment-method.enum.js';
 

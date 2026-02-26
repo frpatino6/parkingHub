@@ -2,7 +2,7 @@ import { UseCase } from '../../interfaces/use-case.interface.js';
 import { CancelTicketDto } from '../../dtos/cancel-ticket.dto.js';
 import { TicketRepository } from '../../../domain/ports/TicketRepository.Port.js';
 import { AuditLogRepository } from '../../../domain/ports/AuditLogRepository.Port.js';
-import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
+import { Ticket } from '../../../domain/entities/ticket.entity.js';
 import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 import { NotFoundError, ForbiddenError } from '../../../domain/errors/domain-errors.js';

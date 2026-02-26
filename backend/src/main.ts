@@ -63,11 +63,11 @@ import { ExportCashCutsReportUseCase } from './application/use-cases/reports/Exp
 import { authMiddleware, requireRole } from './infrastructure/http/middlewares/auth.middleware.js';
 import { tenantContextMiddleware } from './infrastructure/http/middlewares/TenantContext.Middleware.js';
 import { requireOpenCashCut } from './infrastructure/http/middlewares/RequireOpenCashCut.Middleware.js';
-import { AuthController } from './infrastructure/http/controllers/Auth.Controller.js';
-import { TicketController } from './infrastructure/http/controllers/Ticket.Controller.js';
+import { AuthController } from './infrastructure/http/controllers/auth.controller.js';
+import { TicketController } from './infrastructure/http/controllers/ticket.controller.js';
 import { CashCutController } from './infrastructure/http/controllers/CashCut.Controller.js';
 import { UserController } from './infrastructure/http/controllers/user.controller.js';
-import { BranchController } from './infrastructure/http/controllers/Branch.Controller.js';
+import { BranchController } from './infrastructure/http/controllers/branch.controller.js';
 import { PricingConfigController } from './infrastructure/http/controllers/PricingConfig.Controller.js';
 import { DashboardController } from './infrastructure/http/controllers/Dashboard.Controller.js';
 import { AuditLogController } from './infrastructure/http/controllers/AuditLog.Controller.js';
