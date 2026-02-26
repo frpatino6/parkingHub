@@ -21,6 +21,10 @@ export class CreatePricingConfigUseCase implements UseCase<CreatePricingConfigDt
       await this.pricingConfigRepo.update(existing);
     }
 
+    const normalizedDayMaxRate = dto.dayMaxRate !== undefined && dto.dayMaxRate > 0
+      ? new Money(dto.dayMaxRate)
+      : undefined;
+
     const config = new PricingConfig({
       tenantId: dto.tenantId,
       branchId: dto.branchId,
@@ -28,7 +32,7 @@ export class CreatePricingConfigUseCase implements UseCase<CreatePricingConfigDt
       mode: dto.mode,
       ratePerUnit: new Money(dto.ratePerUnit),
       gracePeriodMinutes: dto.gracePeriodMinutes,
-      dayMaxRate: dto.dayMaxRate !== undefined ? new Money(dto.dayMaxRate) : undefined,
+      dayMaxRate: normalizedDayMaxRate,
       blockSizeMinutes: dto.blockSizeMinutes,
       active: true,
     });

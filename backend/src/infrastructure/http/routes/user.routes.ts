@@ -23,10 +23,23 @@ const resetPasswordSchema = z.object({
   password: z.string().min(8),
 });
 
+const changeOwnPasswordSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(8),
+});
+
+/** Self-service routes — accessible to any authenticated user */
+export function createUserSelfServiceRoutes(controller: UserController): Router {
+  const router = Router();
+  router.post('/me/password', validate(changeOwnPasswordSchema), controller.changeOwnPassword);
+  return router;
+}
+
+/** Admin-only routes */
 export function createUserRoutes(controller: UserController): Router {
   const router = Router();
   router.post('/', validate(createUserSchema), controller.create);
-  router.get('/', controller.getAll);
+  router.get('/', controller.getAllPaginated);
   router.put('/:id', validate(updateUserSchema), controller.update);
   router.patch('/:id/password', validate(resetPasswordSchema), controller.resetPassword);
   return router;

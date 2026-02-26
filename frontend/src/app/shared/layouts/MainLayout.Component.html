@@ -53,7 +53,7 @@
 
     <div class="sidebar-footer">
       <div class="user-info">
-        <p class="user-name">{{ user()?.name ?? 'Operario' }}</p>
+        <a class="user-name" routerLink="/profile" (click)="closeSidebar()">{{ user()?.name ?? 'Operario' }}</a>
         <p class="user-role">{{ user()?.role }}</p>
       </div>
       <button class="logout-btn" (click)="onLogout()">
@@ -66,3 +66,6 @@
     <router-outlet />
   </main>
 </div>
+
+<app-toast />
+<app-confirm-dialog />

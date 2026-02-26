@@ -10,6 +10,7 @@
     "check-users": "..\\scripts\\use-node20.cmd tsx src/scripts/check-users.ts",
     "fix-roles": "..\\scripts\\use-node20.cmd tsx src/scripts/fix-roles.ts",
     "seed-users-by-role": "..\\scripts\\use-node20.cmd tsx src/scripts/seed-users-by-role.ts",
+    "migrate-daymax-zero-to-null": "..\\scripts\\use-node20.cmd tsx src/scripts/migrate-daymax-zero-to-null.ts",
     "build": "tsc",
     "start": "node dist/main.js",
     "test": "jest"

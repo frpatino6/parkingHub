@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { TokenService, TokenPayload } from '../../../application/ports/token.service.port.js';
 import { UserRole } from '../../../domain/enums/user-role.enum.js';
+import { logger } from '../../config/logger.js';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -30,7 +31,7 @@ export function authMiddleware(tokenService: TokenService) {
 export function requireRole(...roles: UserRole[]) {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.auth || !roles.includes(req.auth.role as UserRole)) {
-      console.log(`Auth check failed: User role '${req.auth?.role}' not in approved list: [${roles.join(', ')}]`);
+      logger.warn({ role: req.auth?.role, required: roles }, 'Auth check failed: insufficient role');
       res.status(403).json({ error: 'Insufficient permissions' });
       return;
     }

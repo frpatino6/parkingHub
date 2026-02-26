@@ -1,0 +1,36 @@
+@if (totalPages() > 1) {
+  <nav class="pagination" aria-label="Paginación">
+    <button
+      class="page-btn page-btn--nav"
+      [disabled]="currentPage() === 1"
+      (click)="goTo(currentPage() - 1)"
+      aria-label="Página anterior"
+    >
+      <span class="material-icons">chevron_left</span>
+    </button>
+
+    @for (page of pages(); track $index) {
+      @if (page === null) {
+        <span class="page-ellipsis">…</span>
+      } @else {
+        <button
+          class="page-btn"
+          [class.active]="page === currentPage()"
+          (click)="goTo(page)"
+          [attr.aria-current]="page === currentPage() ? 'page' : null"
+        >
+          {{ page }}
+        </button>
+      }
+    }
+
+    <button
+      class="page-btn page-btn--nav"
+      [disabled]="currentPage() === totalPages()"
+      (click)="goTo(currentPage() + 1)"
+      aria-label="Página siguiente"
+    >
+      <span class="material-icons">chevron_right</span>
+    </button>
+  </nav>
+}

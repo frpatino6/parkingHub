@@ -1,0 +1,269 @@
+@use '../../../../styles/variables' as *;
+
+.branches-container {
+  padding: $space-6;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  margin-bottom: $space-8;
+
+  .header-content h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: $neutral-50;
+    margin: 0 0 $space-1;
+  }
+
+  .subtitle {
+    color: $neutral-400;
+    font-size: $space-4;
+    margin: 0;
+  }
+}
+
+.branches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $space-5;
+}
+
+.branch-card {
+  padding: $space-5;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  transition: opacity 0.2s;
+
+  &.inactive { opacity: 0.6; }
+}
+
+.branch-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.branch-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-lg;
+  background: rgba($primary-500, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .material-icons { color: $primary-400; font-size: 20px; }
+}
+
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: $radius-full;
+
+  &.active {
+    background: rgba($accent-500, 0.15);
+    color: $accent-400;
+  }
+
+  &.inactive {
+    background: rgba($error-500, 0.15);
+    color: $error-400;
+  }
+}
+
+.branch-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $neutral-100;
+  margin: 0;
+}
+
+.branch-address,
+.branch-spots {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  font-size: 0.8125rem;
+  color: $neutral-400;
+  margin: 0;
+
+  .material-icons { font-size: 1rem; }
+}
+
+.branch-actions {
+  display: flex;
+  gap: $space-2;
+  margin-top: auto;
+  padding-top: $space-3;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+// —— Modal (Editar / Nueva Sede) ——
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba($neutral-950, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-4;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 480px;
+  padding: $space-8;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $space-6;
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $neutral-50;
+    margin: 0;
+  }
+
+  .btn-close {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: $radius-md;
+    color: $neutral-500;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      color: $neutral-100;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-400;
+      outline-offset: 2px;
+    }
+  }
+}
+
+.branch-form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+
+    label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: $neutral-400;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  .form-input {
+    width: 100%;
+    min-height: 44px;
+    padding: $space-3 $space-4;
+    background: rgba($neutral-900, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: $radius-lg;
+    color: $neutral-50;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &::placeholder {
+      color: $neutral-500;
+    }
+
+    &:hover:not(:focus) {
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary-500;
+      box-shadow: 0 0 0 3px rgba($primary-500, 0.2);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-400;
+      outline-offset: 2px;
+    }
+  }
+
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: $space-2;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: $neutral-300;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: $primary-500;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $space-4;
+    margin-top: $space-2;
+    padding-top: $space-4;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+.form-error {
+  background: rgba($error-500, 0.12);
+  border: 1px solid rgba($error-500, 0.3);
+  color: $error-400;
+  padding: $space-3 $space-4;
+  border-radius: $radius-md;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: $space-2;
+}
+
+@media (max-width: 767px) {
+  .branches-container {
+    padding: $space-4;
+  }
+
+  .branches-grid {
+    grid-template-columns: 1fr;
+  }
+}

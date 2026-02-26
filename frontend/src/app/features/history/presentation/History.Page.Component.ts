@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,8 @@ import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/infrastructure/auth/Auth.Service';
 import { extractApiError } from '../../../shared/utils/api-error.util';
 import { FinancialReportComponent } from './reports/FinancialReport.Component';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { ReportsService } from '../../../core/infrastructure/reports/Reports.Service';
 
 interface Ticket {
   id: string;
@@ -19,25 +21,39 @@ interface Ticket {
   qrCode: string;
 }
 
+interface PaginatedTickets {
+  items: Ticket[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 @Component({
   selector: 'app-history-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, FinancialReportComponent],
+  imports: [CommonModule, FormsModule, FinancialReportComponent, PaginationComponent],
   templateUrl: './History.Page.Component.html',
   styleUrl: './History.Page.Component.scss',
-  encapsulation: ViewEncapsulation.None
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryPageComponent implements OnInit {
   private http = inject(HttpClient);
   public auth = inject(AuthService);
-  
+  readonly reportsService = inject(ReportsService);
+
   tickets = signal<Ticket[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
   activeTab = signal<'tickets' | 'financial'>('tickets');
+  exportModalOpen = signal(false);
 
   // Search
   searchPlate = signal('');
+
+  // Pagination
+  currentPage = signal(1);
+  pageSize = signal(20);
+  totalItems = signal(0);
 
   ngOnInit() {
     this.loadHistory();
@@ -46,26 +62,62 @@ export class HistoryPageComponent implements OnInit {
   loadHistory() {
     this.loading.set(true);
     this.error.set(null);
-    
-    const plate = this.searchPlate().trim();
-    // Verify backend route: /tickets?plate=... maps to getHistory in controller
-    // My previous backend edit added router.get('/', controller.getHistory) in ticket.routes.ts
-    // The base route in app.ts is probably /api/tickets. 
-    // So GET /api/tickets?plate=... is correct.
-    
-    const url = `${environment.apiUrl}/tickets${plate ? `?plate=${plate}` : ''}`;
 
-    this.http.get<Ticket[]>(url)
-      .subscribe({
-        next: (data) => {
-          this.tickets.set(data);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set(extractApiError(err, 'No se pudo cargar el historial.'));
-          this.loading.set(false);
-        }
-      });
+    const plate = this.searchPlate().trim();
+    if (plate) {
+      // Search by plate (no pagination)
+      const url = `${environment.apiUrl}/tickets?plate=${plate}`;
+      this.http.get<Ticket[]>(url)
+        .subscribe({
+          next: (data) => {
+            this.tickets.set(data);
+            this.totalItems.set(data.length);
+            this.loading.set(false);
+          },
+          error: (err) => {
+            this.error.set(extractApiError(err, 'No se pudo cargar el historial.'));
+            this.loading.set(false);
+          }
+        });
+    } else {
+      // Paginated history
+      const url = `${environment.apiUrl}/tickets/history?page=${this.currentPage()}&limit=${this.pageSize()}`;
+      this.http.get<PaginatedTickets>(url)
+        .subscribe({
+          next: (data) => {
+            this.tickets.set(data.items);
+            this.totalItems.set(data.total);
+            this.loading.set(false);
+          },
+          error: (err) => {
+            this.error.set(extractApiError(err, 'No se pudo cargar el historial.'));
+            this.loading.set(false);
+          }
+        });
+    }
+  }
+
+  onSearch(): void {
+    this.currentPage.set(1);
+    this.loadHistory();
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
+    this.loadHistory();
+  }
+
+  onExport(): void {
+    this.reportsService.exportTickets().subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `tickets_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+    });
   }
 
   onReprintEntry(ticket: Ticket) {

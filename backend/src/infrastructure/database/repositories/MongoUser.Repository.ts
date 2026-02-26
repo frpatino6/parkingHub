@@ -1,4 +1,4 @@
-import { UserRepository } from '../../../domain/ports/UserRepository.Port.js';
+import { UserRepository, PaginatedResult } from '../../../domain/ports/UserRepository.Port.js';
 import { User } from '../../../domain/entities/user.entity.js';
 import { UserModel, UserDoc } from '../models/user.model.js';
 import { TenantContext } from '../../config/TenantContext.js';
@@ -20,6 +20,15 @@ export class MongoUserRepository implements UserRepository {
     const finalTenantId = tenantId ?? TenantContext.tenantId;
     const docs = await UserModel.find({ tenantId: finalTenantId });
     return docs.map((d) => this.toDomain(d));
+  }
+
+  async findPaginatedByTenant(tenantId: string, page: number, limit: number): Promise<PaginatedResult<User>> {
+    const skip = (page - 1) * limit;
+    const [docs, total] = await Promise.all([
+      UserModel.find({ tenantId }).skip(skip).limit(limit),
+      UserModel.countDocuments({ tenantId }),
+    ]);
+    return { items: docs.map(d => this.toDomain(d)), total };
   }
 
   async create(user: User): Promise<User> {

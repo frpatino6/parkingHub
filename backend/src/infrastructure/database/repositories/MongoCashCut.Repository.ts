@@ -31,6 +31,15 @@ export class MongoCashCutRepository implements CashCutRepository {
     return docs.map((d) => this.toDomain(d));
   }
 
+  async findByBranchAndDateRange(branchId: string, from: Date, to: Date): Promise<CashCut[]> {
+    const docs = await CashCutModel.find({
+      tenantId: TenantContext.tenantId,
+      branchId,
+      openedAt: { $gte: from, $lte: to },
+    }).sort({ openedAt: -1 });
+    return docs.map((d) => this.toDomain(d));
+  }
+
   async create(cashCut: CashCut): Promise<CashCut> {
     const doc = await CashCutModel.create({
       tenantId: cashCut.tenantId,

@@ -5,7 +5,7 @@ import { PricingConfigRepository } from '../../../domain/ports/PricingConfigRepo
 import { CashCutRepository } from '../../../domain/ports/CashCutRepository.Port.js';
 import { AuditLogRepository } from '../../../domain/ports/AuditLogRepository.Port.js';
 import { PricingEngineService } from '../../services/pricing-engine.service.js';
-import { Ticket } from '../../../domain/entities/ticket.entity.js';
+import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
 import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 import { NotFoundError, ForbiddenError, DomainError } from '../../../domain/errors/domain-errors.js';

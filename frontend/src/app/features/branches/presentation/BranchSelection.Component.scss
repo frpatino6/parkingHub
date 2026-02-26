@@ -59,6 +59,14 @@
   margin-bottom: $space-6;
 }
 
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  margin-bottom: $space-3;
+  box-shadow: 0 12px 24px rgba($primary-700, 0.35);
+}
+
 .selection-title {
   margin: 0;
   font-family: $font-display;

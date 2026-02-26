@@ -292,3 +292,19 @@
   font-weight: $font-semibold;
   color: $neutral-100;
 }
+
+@media (max-width: 767px) {
+  .filters-bar {
+    flex-direction: column;
+    gap: $space-3;
+  }
+
+  .filter-group {
+    min-width: 0;
+  }
+
+  .tabs-nav {
+    overflow-x: auto;
+    padding-bottom: $space-1;
+  }
+}
