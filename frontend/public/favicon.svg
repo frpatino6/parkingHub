@@ -1,0 +1,17 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="ParkingHub">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1F3B"/>
+      <stop offset="100%" stop-color="#1D4E89"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#39D98A"/>
+      <stop offset="100%" stop-color="#16B3A3"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg)"/>
+
+  <path d="M20 14h13c7.7 0 13 4.8 13 12s-5.3 12-13 12h-6v12h-7V14zm7 7v10h6c3.7 0 6-1.8 6-5s-2.3-5-6-5h-6z" fill="#FFFFFF"/>
+  <rect x="40" y="37" width="12" height="12" rx="4" fill="url(#accent)"/>
+</svg>
