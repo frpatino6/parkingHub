@@ -1,5 +1,5 @@
 import { UserRepository } from '../../../domain/ports/UserRepository.Port.js';
-import { User } from '../../../domain/entities/User.Entity.js';
+import { User } from '../../../domain/entities/user.entity.js';
 import { UserModel, UserDoc } from '../models/user.model.js';
 import { TenantContext } from '../../config/TenantContext.js';
 
@@ -76,3 +76,4 @@ export class MongoUserRepository implements UserRepository {
     });
   }
 }
+

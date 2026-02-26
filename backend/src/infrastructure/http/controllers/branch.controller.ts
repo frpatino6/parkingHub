@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { CreateBranchUseCase } from '../../../application/use-cases/branch/CreateBranch.UseCase.js';
 import { GetBranchesByTenantUseCase } from '../../../application/use-cases/branch/GetBranchesByTenant.UseCase.js';
-import { Branch } from '../../../domain/entities/Branch.Entity.js';
+import { Branch } from '../../../domain/entities/branch.entity.js';
 
 export class BranchController {
   constructor(
@@ -46,3 +46,4 @@ export class BranchController {
     }
   };
 }
+

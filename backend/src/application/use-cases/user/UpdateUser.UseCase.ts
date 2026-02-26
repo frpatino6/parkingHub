@@ -5,7 +5,7 @@ import { UserRole } from '../../../domain/enums/user-role.enum.js';
 import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 import { NotFoundError, ValidationError } from '../../../domain/errors/domain-errors.js';
-import { User } from '../../../domain/entities/User.Entity.js';
+import { User } from '../../../domain/entities/user.entity.js';
 
 export interface UpdateUserDto {
   userId: string;
@@ -67,3 +67,4 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDto, User> {
     return saved;
   }
 }
+

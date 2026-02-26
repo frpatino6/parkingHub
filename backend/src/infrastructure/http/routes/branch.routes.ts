@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { BranchController } from '../controllers/Branch.Controller.js';
+import { BranchController } from '../controllers/branch.controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
 
 const createBranchSchema = z.object({
@@ -14,3 +14,4 @@ export function createBranchRoutes(controller: BranchController, adminOnly: any)
   router.post('/', adminOnly, validate(createBranchSchema), controller.create);
   return router;
 }
+

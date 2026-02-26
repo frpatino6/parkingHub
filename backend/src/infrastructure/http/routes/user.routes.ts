@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { UserController } from '../controllers/User.Controller.js';
+import { UserController } from '../controllers/user.controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { UserRole } from '../../../domain/enums/user-role.enum.js';
 
@@ -31,3 +31,4 @@ export function createUserRoutes(controller: UserController): Router {
   router.patch('/:id/password', validate(resetPasswordSchema), controller.resetPassword);
   return router;
 }
+

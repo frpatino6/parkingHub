@@ -3,7 +3,7 @@ import { GetUsersUseCase } from '../../../application/use-cases/user/GetUsers.Us
 import { UpdateUserUseCase } from '../../../application/use-cases/user/UpdateUser.UseCase.js';
 import { ResetPasswordUseCase } from '../../../application/use-cases/user/ResetPassword.UseCase.js';
 import { CreateUserUseCase } from '../../../application/use-cases/user/CreateUser.UseCase.js';
-import { User } from '../../../domain/entities/User.Entity.js';
+import { User } from '../../../domain/entities/user.entity.js';
 import { UserRole } from '../../../domain/enums/user-role.enum.js';
 
 export class UserController {
@@ -77,3 +77,4 @@ export class UserController {
     };
   }
 }
+

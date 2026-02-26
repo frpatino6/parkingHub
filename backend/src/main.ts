@@ -52,11 +52,11 @@ import { UpdatePricingConfigUseCase } from './application/use-cases/pricing/Upda
 import { authMiddleware, requireRole } from './infrastructure/http/middlewares/auth.middleware.js';
 import { tenantContextMiddleware } from './infrastructure/http/middlewares/TenantContext.Middleware.js';
 import { requireOpenCashCut } from './infrastructure/http/middlewares/RequireOpenCashCut.Middleware.js';
-import { AuthController } from './infrastructure/http/controllers/Auth.Controller.js';
-import { TicketController } from './infrastructure/http/controllers/Ticket.Controller.js';
+import { AuthController } from './infrastructure/http/controllers/auth.controller.js';
+import { TicketController } from './infrastructure/http/controllers/ticket.controller.js';
 import { CashCutController } from './infrastructure/http/controllers/CashCut.Controller.js';
-import { UserController } from './infrastructure/http/controllers/User.Controller.js';
-import { BranchController } from './infrastructure/http/controllers/Branch.Controller.js';
+import { UserController } from './infrastructure/http/controllers/user.controller.js';
+import { BranchController } from './infrastructure/http/controllers/branch.controller.js';
 import { PricingConfigController } from './infrastructure/http/controllers/PricingConfig.Controller.js';
 import { createAuthRoutes } from './infrastructure/http/routes/auth.routes.js';
 import { createTicketRoutes } from './infrastructure/http/routes/ticket.routes.js';
@@ -182,3 +182,4 @@ bootstrap().catch((err) => {
   logger.fatal({ err }, 'Bootstrap failed');
   process.exit(1);
 });
+

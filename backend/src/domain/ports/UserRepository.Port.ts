@@ -1,4 +1,4 @@
-import { User } from '../entities/User.Entity.js';
+import { User } from '../entities/user.entity.js';
 
 export interface UserRepository {
   findById(id: string): Promise<User | null>;
@@ -7,3 +7,4 @@ export interface UserRepository {
   create(user: User): Promise<User>;
   update(user: User): Promise<User>;
 }
+

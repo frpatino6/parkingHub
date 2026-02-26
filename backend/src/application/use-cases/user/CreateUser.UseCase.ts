@@ -3,7 +3,7 @@ import { CreateUserDto } from '../../dtos/create-user.dto.js';
 import { UserRepository } from '../../../domain/ports/UserRepository.Port.js';
 import { AuditLogRepository } from '../../../domain/ports/AuditLogRepository.Port.js';
 import { HashingService } from '../../ports/hashing.service.port.js';
-import { User } from '../../../domain/entities/User.Entity.js';
+import { User } from '../../../domain/entities/user.entity.js';
 import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 import { UserRole } from '../../../domain/enums/user-role.enum.js';
@@ -53,3 +53,4 @@ export class CreateUserUseCase implements UseCase<CreateUserDto, User> {
     return saved;
   }
 }
+

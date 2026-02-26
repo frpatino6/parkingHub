@@ -1,4 +1,4 @@
-import { Branch } from '../entities/Branch.Entity.js';
+import { Branch } from '../entities/branch.entity.js';
 
 export interface BranchRepository {
   findById(id: string): Promise<Branch | null>;
@@ -6,3 +6,4 @@ export interface BranchRepository {
   create(branch: Branch): Promise<Branch>;
   update(branch: Branch): Promise<Branch>;
 }
+

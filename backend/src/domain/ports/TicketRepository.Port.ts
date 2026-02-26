@@ -1,4 +1,4 @@
-import { Ticket } from '../entities/Ticket.Entity.js';
+import { Ticket } from '../entities/ticket.entity.js';
 import { TicketStatus } from '../enums/ticket-status.enum.js';
 
 export interface TicketRepository {
@@ -10,3 +10,4 @@ export interface TicketRepository {
   create(ticket: Ticket): Promise<Ticket>;
   update(ticket: Ticket): Promise<Ticket>;
 }
+

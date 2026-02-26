@@ -1,5 +1,5 @@
 import { BranchRepository } from '../../../domain/ports/BranchRepository.Port.js';
-import { Branch } from '../../../domain/entities/Branch.Entity.js';
+import { Branch } from '../../../domain/entities/branch.entity.js';
 import { BranchModel, BranchDoc } from '../models/branch.model.js';
 import { TenantContext } from '../../config/TenantContext.js';
 
@@ -47,3 +47,4 @@ export class MongoBranchRepository implements BranchRepository {
     });
   }
 }
+

@@ -5,7 +5,7 @@ import { HashingService } from '../../ports/hashing.service.port.js';
 import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 import { NotFoundError } from '../../../domain/errors/domain-errors.js';
-import { User } from '../../../domain/entities/User.Entity.js';
+import { User } from '../../../domain/entities/user.entity.js';
 
 export interface ResetPasswordDto {
   userId: string;
@@ -21,38 +21,27 @@ export class ResetPasswordUseCase implements UseCase<ResetPasswordDto, User> {
 
   async execute(dto: ResetPasswordDto): Promise<User> {
     const user = await this.userRepo.findById(dto.userId);
-    if (!user) throw new NotFoundError(`User with ID ${dto.userId} not found`);
+    if (!user) throw new NotFoundError('User', dto.userId);
 
     const passwordHash = await this.hashingService.hash(dto.newPassword);
 
-    // Reuse the update flow or repository update. 
-    // The current UserRepository.update only updates name, active, branchId.
-    // I need to update the port/repo to support password update or create a more generic update.
-    
-    // Let's modify MongoUserRepository.update later. 
-    // For now, I'll assume I update it.
-    
     const updatedUser = new User({
       id: user.id,
       tenantId: user.tenantId,
       email: user.email,
-      passwordHash, // New hash
+      passwordHash,
       name: user.name,
       role: user.role,
       active: user.active,
-      branchId: user.branchId,
+      branchIds: user.branchIds,
     });
 
-    // Wait, let's verify MongoUserRepository.update first.
-    // Line 41: { name: user.name, active: user.active, branchId: user.branchId }
-    // It's NOT updating passwordHash. I must fix that.
-    
     const saved = await this.userRepo.update(updatedUser);
 
     await this.auditLogRepo.create(
       new AuditLog({
         tenantId: saved.tenantId,
-        branchId: saved.branchId,
+        branchIds: saved.branchIds,
         userId: saved.id!,
         action: AuditAction.USER_PASSWORD_RESET,
         entityType: 'User',
@@ -63,3 +52,5 @@ export class ResetPasswordUseCase implements UseCase<ResetPasswordDto, User> {
     return saved;
   }
 }
+
+

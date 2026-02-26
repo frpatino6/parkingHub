@@ -1,5 +1,5 @@
 import { BranchRepository } from '../../../domain/ports/BranchRepository.Port.js';
-import { Branch } from '../../../domain/entities/Branch.Entity.js';
+import { Branch } from '../../../domain/entities/branch.entity.js';
 
 export class GetBranchesByTenantUseCase {
   constructor(private readonly branchRepository: BranchRepository) {}
@@ -8,3 +8,4 @@ export class GetBranchesByTenantUseCase {
     return this.branchRepository.findByTenantId(tenantId);
   }
 }
+
