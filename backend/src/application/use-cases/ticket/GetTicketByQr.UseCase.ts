@@ -2,7 +2,7 @@ import { UseCase } from '../../interfaces/use-case.interface.js';
 import { TicketRepository } from '../../../domain/ports/TicketRepository.Port.js';
 import { PricingConfigRepository } from '../../../domain/ports/PricingConfigRepository.Port.js';
 import { PricingEngineService } from '../../services/pricing-engine.service.js';
-import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
+import { Ticket } from '../../../domain/entities/ticket.entity.js';
 import { NotFoundError, ForbiddenError, DomainError } from '../../../domain/errors/domain-errors.js';
 
 export interface GetTicketByQrDto {

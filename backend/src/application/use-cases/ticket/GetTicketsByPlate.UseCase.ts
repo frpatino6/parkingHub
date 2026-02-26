@@ -1,5 +1,5 @@
 import { UseCase } from '../../interfaces/use-case.interface.js';
-import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
+import { Ticket } from '../../../domain/entities/ticket.entity.js';
 import { TicketRepository } from '../../../domain/ports/TicketRepository.Port.js';
 import { TenantContext } from '../../../infrastructure/config/TenantContext.js';
 

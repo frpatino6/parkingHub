@@ -4,7 +4,7 @@ import { CheckInDto, CheckInResult } from '../../dtos/check-in.dto.js';
 import { TicketRepository } from '../../../domain/ports/TicketRepository.Port.js';
 import { AuditLogRepository } from '../../../domain/ports/AuditLogRepository.Port.js';
 import { QrCodeService } from '../../ports/qr-code.service.port.js';
-import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
+import { Ticket } from '../../../domain/entities/ticket.entity.js';
 import { AuditLog } from '../../../domain/entities/AuditLog.Entity.js';
 import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 import { CashCutRepository } from '../../../domain/ports/CashCutRepository.Port.js';

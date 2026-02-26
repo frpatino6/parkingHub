@@ -1,5 +1,5 @@
 import { TicketRepository, PaginatedResult } from '../../../domain/ports/TicketRepository.Port.js';
-import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
+import { Ticket } from '../../../domain/entities/ticket.entity.js';
 
 export interface GetTicketsPaginatedInput {
   branchId: string;

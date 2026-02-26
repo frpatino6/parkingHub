@@ -1,5 +1,5 @@
 import { TicketRepository, PaginatedResult } from '../../../domain/ports/TicketRepository.Port.js';
-import { Ticket } from '../../../domain/entities/Ticket.Entity.js';
+import { Ticket } from '../../../domain/entities/ticket.entity.js';
 import { TicketStatus } from '../../../domain/enums/ticket-status.enum.js';
 import { Money } from '../../../domain/value-objects/money.value-object.js';
 import { TenantContext } from '../../config/TenantContext.js';

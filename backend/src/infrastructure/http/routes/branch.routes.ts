@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import { z } from 'zod';
-import { BranchController } from '../controllers/Branch.Controller.js';
+import { BranchController } from '../controllers/branch.controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
 
 const createBranchSchema = z.object({
