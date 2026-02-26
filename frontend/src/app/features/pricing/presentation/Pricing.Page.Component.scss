@@ -205,6 +205,17 @@
     gap: $space-2;
 
     label { font-size: $text-xs; font-weight: $font-bold; color: $neutral-500; text-transform: uppercase; }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: $space-2;
+      color: $neutral-300;
+      cursor: pointer;
+      text-transform: none;
+      font-size: $text-sm;
+      font-weight: $font-medium;
+    }
   }
 
   .input-wrapper {

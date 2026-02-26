@@ -20,6 +20,19 @@
   box-shadow: $shadow-xl;
 }
 
+.login-brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: $space-4;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba($primary-700, 0.35);
+}
+
 .login-title {
   font-family: $font-display;
   font-size: $text-2xl;

@@ -7,7 +7,10 @@
       "Bash(scripts/../../../scripts/use-node20.cmd npx tsc --noEmit)",
       "Bash(/c/Users/frodr/AppData/Roaming/nvm/v20.19.0/node.exe /c/Users/frodr/AppData/Roaming/nvm/v20.19.0/node_modules/typescript/bin/tsc --noEmit)",
       "Bash(cmd.exe /c \"D:\\\\ParkingHub\\\\scripts\\\\use-node20.cmd npx tsc --noEmit 2>&1\")",
-      "Bash(cmd.exe /c \"type D:\\\\ParkingHub\\\\scripts\\\\use-node20.cmd\")"
+      "Bash(cmd.exe /c \"type D:\\\\ParkingHub\\\\scripts\\\\use-node20.cmd\")",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)"
     ]
   }
 }

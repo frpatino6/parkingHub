@@ -5,6 +5,7 @@ import { GetTicketByQrUseCase } from '../../../application/use-cases/ticket/GetT
 import { GetActiveTicketsUseCase } from '../../../application/use-cases/ticket/GetActiveTickets.UseCase.js';
 import { CancelTicketUseCase } from '../../../application/use-cases/ticket/CancelTicket.UseCase.js';
 import { GetTicketsByPlateUseCase } from '../../../application/use-cases/ticket/GetTicketsByPlate.UseCase.js';
+import { GetTicketsPaginatedUseCase } from '../../../application/use-cases/ticket/GetTicketsPaginated.UseCase.js';
 import { Ticket } from '../../../domain/entities/ticket.entity.js';
 import { VehicleType } from '../../../domain/enums/vehicle-type.enum.js';
 import { PaymentMethod } from '../../../domain/enums/payment-method.enum.js';
@@ -17,6 +18,7 @@ export class TicketController {
     private readonly getActiveTicketsUseCase: GetActiveTicketsUseCase,
     private readonly cancelTicketUseCase: CancelTicketUseCase,
     private readonly getTicketsByPlateUseCase: GetTicketsByPlateUseCase,
+    private readonly getTicketsPaginatedUseCase: GetTicketsPaginatedUseCase,
   ) {}
 
   getByQr = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -53,6 +55,26 @@ export class TicketController {
         ...this.toTicketResponse(t),
         durationMinutes: t.getDurationMinutes()
       })));
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  getHistoryPaginated = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const branchId = req.auth!.activeBranchId!;
+      const page = Math.max(1, Number(req.query['page']) || 1);
+      const limit = Math.min(100, Math.max(1, Number(req.query['limit']) || 20));
+      const result = await this.getTicketsPaginatedUseCase.execute({ branchId, page, limit });
+      res.json({
+        items: result.items.map(t => ({
+          ...this.toTicketResponse(t),
+          durationMinutes: t.getDurationMinutes(),
+        })),
+        total: result.total,
+        page,
+        limit,
+      });
     } catch (err) {
       next(err);
     }

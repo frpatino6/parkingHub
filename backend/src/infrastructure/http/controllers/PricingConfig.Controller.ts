@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { CreatePricingConfigUseCase } from '../../../application/use-cases/pricing/CreatePricingConfig.UseCase.js';
 import { GetPricingConfigsUseCase } from '../../../application/use-cases/pricing/GetPricingConfigs.UseCase.js';
 import { UpdatePricingConfigUseCase } from '../../../application/use-cases/pricing/UpdatePricingConfig.UseCase.js';
+import { SimulatePriceUseCase } from '../../../application/use-cases/pricing/SimulatePrice.UseCase.js';
 import { VehicleType } from '../../../domain/enums/vehicle-type.enum.js';
 import { PricingMode } from '../../../domain/enums/pricing-mode.enum.js';
 
@@ -9,7 +10,8 @@ export class PricingConfigController {
   constructor(
     private readonly createPricingConfigUseCase: CreatePricingConfigUseCase,
     private readonly getPricingConfigsUseCase: GetPricingConfigsUseCase,
-    private readonly updatePricingConfigUseCase: UpdatePricingConfigUseCase
+    private readonly updatePricingConfigUseCase: UpdatePricingConfigUseCase,
+    private readonly simulatePriceUseCase: SimulatePriceUseCase,
   ) {}
 
   create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -55,6 +57,19 @@ export class PricingConfigController {
         blockSizeMinutes: c.blockSizeMinutes,
         active: c.active
       })));
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  simulate = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const result = await this.simulatePriceUseCase.execute({
+        branchId: req.body.branchId as string,
+        vehicleType: req.body.vehicleType as VehicleType,
+        durationMinutes: req.body.durationMinutes as number,
+      });
+      res.json(result);
     } catch (err) {
       next(err);
     }

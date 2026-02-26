@@ -4,11 +4,13 @@ import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/rou
 import { AuthService } from '../../core/infrastructure/auth/Auth.Service';
 import { ContextService } from '../../core/infrastructure/context/Context.Service';
 import { BranchSelectionComponent } from '../../features/branches/presentation/BranchSelection.Component';
+import { ToastComponent } from '../components/toast/toast.component';
+import { ConfirmDialogComponent } from '../components/dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, BranchSelectionComponent],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, BranchSelectionComponent, ToastComponent, ConfirmDialogComponent],
   templateUrl: './MainLayout.Component.html',
   styleUrl: './MainLayout.Component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,13 +27,16 @@ export class MainLayoutComponent {
   readonly navItems = computed(() => {
     const userRole = this.user()?.role;
     const allItems = [
+      { label: 'Dashboard', route: '/dashboard', icon: 'dashboard', roles: ['PARKING_ADMIN', 'SUPER_ADMIN'] },
       { label: 'Ingresos', route: '/check-in', icon: 'login', roles: ['OPERATOR'] },
       { label: 'Salidas', route: '/check-out', icon: 'logout', roles: ['OPERATOR'] },
       { label: 'Inventario', route: '/inventory', icon: 'directions_car', roles: ['OPERATOR', 'PARKING_ADMIN'] },
       { label: 'Historial', route: '/history', icon: 'history', roles: ['OPERATOR', 'PARKING_ADMIN', 'SUPER_ADMIN'] },
       { label: 'Usuarios', route: '/users', icon: 'people', roles: ['PARKING_ADMIN', 'SUPER_ADMIN'] },
+      { label: 'Sedes', route: '/branches', icon: 'store', roles: ['PARKING_ADMIN', 'SUPER_ADMIN'] },
       { label: 'Tarifas', route: '/pricing', icon: 'payments', roles: ['PARKING_ADMIN', 'SUPER_ADMIN'] },
       { label: 'Cierre de Caja', route: '/cash-cut', icon: 'account_balance_wallet', roles: ['OPERATOR'] },
+      { label: 'Auditoría', route: '/audit-log', icon: 'security', roles: ['PARKING_ADMIN', 'SUPER_ADMIN'] },
     ];
     return allItems.filter(item => !item.roles || (userRole && item.roles.includes(userRole)));
   });

@@ -18,6 +18,7 @@ export class CreateBranchUseCase implements UseCase<CreateBranchDto, Branch> {
       name: dto.name,
       address: dto.address,
       active: true,
+      totalSpots: dto.totalSpots,
     });
 
     const saved = await this.branchRepo.create(branch);

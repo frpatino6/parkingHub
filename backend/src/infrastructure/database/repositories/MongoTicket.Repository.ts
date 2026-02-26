@@ -1,4 +1,4 @@
-import { TicketRepository } from '../../../domain/ports/TicketRepository.Port.js';
+import { TicketRepository, PaginatedResult } from '../../../domain/ports/TicketRepository.Port.js';
 import { Ticket } from '../../../domain/entities/ticket.entity.js';
 import { TicketStatus } from '../../../domain/enums/ticket-status.enum.js';
 import { Money } from '../../../domain/value-objects/money.value-object.js';
@@ -42,6 +42,26 @@ export class MongoTicketRepository implements TicketRepository {
       plate: { $regex: plate, $options: 'i' }
     }).sort({ checkIn: -1 }).limit(20);
     return docs.map((d) => this.toDomain(d));
+  }
+
+  async findByBranchAndDateRange(branchId: string, from: Date, to: Date): Promise<Ticket[]> {
+    const tenantId = TenantContext.tenantId;
+    const docs = await TicketModel.find({
+      tenantId,
+      branchId,
+      checkIn: { $gte: from, $lte: to },
+    }).sort({ checkIn: -1 });
+    return docs.map((d) => this.toDomain(d));
+  }
+
+  async findPaginatedByBranch(branchId: string, page: number, limit: number): Promise<PaginatedResult<Ticket>> {
+    const tenantId = TenantContext.tenantId;
+    const skip = (page - 1) * limit;
+    const [docs, total] = await Promise.all([
+      TicketModel.find({ tenantId, branchId }).sort({ checkIn: -1 }).skip(skip).limit(limit),
+      TicketModel.countDocuments({ tenantId, branchId }),
+    ]);
+    return { items: docs.map(d => this.toDomain(d)), total };
   }
 
   async create(ticket: Ticket): Promise<Ticket> {

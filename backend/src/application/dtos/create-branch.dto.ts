@@ -5,4 +5,5 @@ export interface CreateBranchDto {
   createdBy: string;
   name: string;
   address: string;
+  totalSpots?: number;
 }

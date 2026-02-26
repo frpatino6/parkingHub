@@ -1,0 +1,62 @@
+@use '../../../../styles/variables' as *;
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba($neutral-950, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-4;
+  animation: backdrop-fade-in 0.2s ease both;
+}
+
+.dialog-panel {
+  width: 100%;
+  max-width: 440px;
+  padding: $space-8;
+  animation: panel-slide-in 0.3s $ease-out-expo both;
+}
+
+.dialog-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: $neutral-100;
+  margin: 0 0 $space-3;
+}
+
+.dialog-message {
+  color: $neutral-400;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin: 0 0 $space-8;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $space-3;
+}
+
+.btn--danger {
+  background: linear-gradient(135deg, $error-600, $error-500);
+  color: white;
+  box-shadow: 0 4px 12px rgba($error-600, 0.35);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba($error-600, 0.45);
+  }
+}
+
+@keyframes backdrop-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes panel-slide-in {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

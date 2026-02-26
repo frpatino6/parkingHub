@@ -17,9 +17,7 @@ export const roleBasedRedirectGuard: CanActivateFn = () => {
   if (user.role === 'OPERATOR') {
     router.navigate(['/check-in']);
   } else if (user.role === 'PARKING_ADMIN' || user.role === 'SUPER_ADMIN') {
-    // For admins, a more logical landing page is the user management or pricing.
-    // We'll use '/users' as it's a common starting point for management.
-    router.navigate(['/users']);
+    router.navigate(['/dashboard']);
   } else {
     router.navigate(['/login']);
   }

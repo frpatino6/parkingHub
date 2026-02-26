@@ -1,0 +1,23 @@
+<div class="scanner-wrapper">
+  @if (status() === 'starting') {
+    <div class="scanner-overlay">
+      <div class="spinner"></div>
+      <p>Iniciando cámara...</p>
+    </div>
+  } @else if (status() === 'error') {
+    <div class="scanner-overlay error">
+      <span class="material-icons">videocam_off</span>
+      <p>{{ errorMessage() ?? 'Error al acceder a la cámara' }}</p>
+    </div>
+  }
+
+  <video #video class="scanner-video" playsinline muted></video>
+  <canvas #canvas class="scanner-canvas" hidden></canvas>
+
+  <div class="scanner-frame">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+  </div>
+</div>

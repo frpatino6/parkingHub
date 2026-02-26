@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -6,6 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/infrastructure/auth/Auth.Service';
 import { FormsModule } from '@angular/forms';
 import { extractApiError } from '../../../shared/utils/api-error.util';
+import { DialogService } from '../../../shared/services/dialog.service';
 
 interface Ticket {
   id: string;
@@ -22,12 +23,13 @@ interface Ticket {
   imports: [CommonModule, FormsModule],
   templateUrl: './Inventory.Page.Component.html',
   styleUrl: './Inventory.Page.Component.scss',
-  encapsulation: ViewEncapsulation.None
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InventoryPageComponent implements OnInit {
   private http = inject(HttpClient);
   public auth = inject(AuthService);
   private router = inject(Router);
+  private readonly dialogService = inject(DialogService);
   
   tickets = signal<Ticket[]>([]);
   loading = signal(false);
@@ -71,7 +73,22 @@ export class InventoryPageComponent implements OnInit {
   }
 
   onCheckOut(ticket: Ticket) {
-    // Pass qrCode so CheckOut auto-loads the ticket and shows confirmation directly
     this.router.navigate(['/check-out'], { queryParams: { qr: ticket.qrCode } });
+  }
+
+  onCancelTicket(ticket: Ticket) {
+    this.dialogService.confirm({
+      title: 'Cancelar Ticket',
+      message: `¿Seguro deseas cancelar el ticket de la placa ${ticket.plate}? Esta acción no se puede deshacer.`,
+      confirmLabel: 'Cancelar Ticket',
+      danger: true,
+    }).subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.http.post(`${environment.apiUrl}/tickets/${ticket.id}/cancel`, { reason: 'Cancelado por operador' })
+        .subscribe({
+          next: () => this.loadTickets(),
+          error: (err) => this.error.set(extractApiError(err, 'No se pudo cancelar el ticket.')),
+        });
+    });
   }
 }

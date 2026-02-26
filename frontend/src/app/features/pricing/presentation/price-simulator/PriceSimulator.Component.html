@@ -1,0 +1,65 @@
+<div class="simulator-wrapper glass-card">
+  <h3 class="sim-title">
+    <span class="material-icons">calculate</span>
+    Simulador de Tarifas
+  </h3>
+
+  <div class="sim-form">
+    <div class="form-row">
+      <div class="form-group">
+        <span class="label" id="sim-vehicle-label">Tipo de Vehículo</span>
+        <div class="vehicle-options" role="group" aria-labelledby="sim-vehicle-label">
+          @for (type of vehicleTypes; track type.value) {
+            <button
+              type="button"
+              class="vehicle-btn"
+              [class.active]="vehicleType === type.value"
+              [attr.aria-pressed]="vehicleType === type.value"
+              (click)="vehicleType = type.value; reset()"
+            >
+              {{ type.label }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="sim-hours">Horas</label>
+        <input id="sim-hours" type="number" class="form-input" [(ngModel)]="hours" name="hours" min="0" max="48" placeholder="0" (change)="reset()">
+      </div>
+      <div class="form-group">
+        <label for="sim-minutes">Minutos</label>
+        <input id="sim-minutes" type="number" class="form-input" [(ngModel)]="minutes" name="minutes" min="0" max="59" placeholder="0" (change)="reset()">
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="sim-error">{{ error() }}</div>
+    }
+
+    <button class="btn btn--primary" (click)="simulate()" [disabled]="loading()">
+      @if (loading()) { <span class="btn-spinner"></span> } @else {
+        <span class="material-icons">play_arrow</span>
+        Calcular
+      }
+    </button>
+  </div>
+
+  @if (result(); as r) {
+    <div class="sim-result">
+      <div class="result-amount">${{ r.amountCOP | number }} COP</div>
+      <div class="result-meta">
+        <span>Modo: <strong>{{ r.mode }}</strong></span>
+        <span>Minutos cobrables: <strong>{{ r.billableMinutes }}</strong></span>
+        @if (r.gracePeriodMinutes > 0) {
+          <span>Gracia: {{ r.gracePeriodMinutes }} min</span>
+        }
+        @if (r.dayMaxRate) {
+          <span>Máx día: ${{ r.dayMaxRate | number }}</span>
+        }
+      </div>
+    </div>
+  }
+</div>

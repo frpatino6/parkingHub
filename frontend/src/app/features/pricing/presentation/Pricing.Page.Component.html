@@ -72,6 +72,8 @@
     }
   </div>
 
+  <app-price-simulator />
+
   @if (editingConfig(); as config) {
     <div class="modal-overlay" (click)="onCancelEdit()">
       <div class="modal-content glass-card" (click)="$event.stopPropagation()">
@@ -105,6 +107,10 @@
               <input type="number" formControlName="gracePeriodMinutes" class="form-input">
             </div>
             <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="hasDayMaxRate" (change)="onToggleDayMaxRate()">
+                Aplicar tope diario
+              </label>
               <label>Tope Diario (COP)</label>
               <input type="number" formControlName="dayMaxRate" class="form-input">
             </div>

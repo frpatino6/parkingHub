@@ -5,6 +5,7 @@ interface IBranchDoc {
   name: string;
   address: string;
   active: boolean;
+  totalSpots?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,6 +16,7 @@ const branchSchema = new Schema<IBranchDoc>(
     name: { type: String, required: true, trim: true },
     address: { type: String, required: true },
     active: { type: Boolean, required: true, default: true },
+    totalSpots: { type: Number, min: 1, default: undefined },
   },
   { timestamps: true },
 );

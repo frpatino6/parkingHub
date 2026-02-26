@@ -40,7 +40,7 @@ export class PricingEngineService {
       }
     }
 
-    if (config.dayMaxRate && amount.isGreaterThan(config.dayMaxRate)) {
+    if (config.dayMaxRate && config.dayMaxRate.amount > 0 && amount.isGreaterThan(config.dayMaxRate)) {
       return config.dayMaxRate;
     }
 

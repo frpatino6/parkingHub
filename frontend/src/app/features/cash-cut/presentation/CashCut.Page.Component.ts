@@ -1,6 +1,7 @@
 import { Component, inject, ChangeDetectionStrategy, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CommonModule, CurrencyPipe } from '@angular/common';
+import { DialogService } from '../../../shared/services/dialog.service';
 
 import { CashCutBloc } from '../application/CashCut.Bloc';
 import { MovementsService, MovementResponse } from '../../../core/infrastructure/movements/Movements.Service';
@@ -21,6 +22,7 @@ export class CashCutPageComponent implements OnInit {
   readonly bloc = inject(CashCutBloc);
   private readonly fb = inject(FormBuilder);
   private readonly movementsService = inject(MovementsService);
+  private readonly dialogService = inject(DialogService);
 
   showMovementModal = signal(false);
   
@@ -46,7 +48,14 @@ export class CashCutPageComponent implements OnInit {
   onCloseTurn(): void {
     if (this.closeForm.invalid) return;
     const { reportedCash } = this.closeForm.getRawValue();
-    this.bloc.closeTurn(reportedCash);
+    this.dialogService.confirm({
+      title: 'Cerrar Turno',
+      message: '¿Seguro deseas cerrar el turno? Una vez cerrado no podrás registrar más operaciones.',
+      confirmLabel: 'Cerrar Turno',
+      danger: true,
+    }).subscribe((confirmed) => {
+      if (confirmed) this.bloc.closeTurn(reportedCash);
+    });
   }
 
   onReset(): void {

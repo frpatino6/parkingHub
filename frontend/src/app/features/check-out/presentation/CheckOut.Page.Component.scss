@@ -294,3 +294,13 @@
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 480px) {
+  .input-with-action {
+    flex-direction: column;
+
+    .form-input, button { width: 100%; }
+  }
+
+  .method-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,243 @@
+@use '../../../../../styles/variables' as *;
+
+.simulator-wrapper {
+  padding: $space-6;
+  margin-top: $space-6;
+}
+
+.sim-title {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: $neutral-100;
+  margin: 0 0 $space-5;
+
+  .material-icons {
+    color: $primary-400;
+    font-size: 1.5rem;
+  }
+}
+
+.sim-form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  label,
+  .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: $neutral-400;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
+// Vehicle type segmented control — clear selected vs unselected
+.vehicle-options {
+  display: flex;
+  gap: $space-2;
+  flex-wrap: wrap;
+}
+
+.vehicle-btn {
+  min-height: 44px;
+  padding: $space-2 $space-4;
+  border-radius: $radius-lg;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: $surface-dark-elevated;
+  color: $neutral-300;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+  &:hover:not(.active) {
+    background: rgba($neutral-600, 0.5);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: $neutral-200;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, $primary-600, $primary-500);
+    border-color: $primary-500;
+    color: white;
+    box-shadow: 0 2px 8px rgba($primary-600, 0.4);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-400;
+    outline-offset: 2px;
+  }
+}
+
+// Dark-theme inputs (aligned with professional-web-design tokens)
+.form-input {
+  width: 100%;
+  min-height: 44px;
+  padding: $space-3 $space-4;
+  background: rgba($neutral-900, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-lg;
+  color: $neutral-50;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: $neutral-500;
+  }
+
+  &:hover:not(:focus) {
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.2);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-400;
+    outline-offset: 2px;
+  }
+}
+
+.sim-error {
+  background: rgba($error-500, 0.12);
+  border: 1px solid rgba($error-500, 0.3);
+  color: $error-400;
+  padding: $space-3 $space-4;
+  border-radius: $radius-md;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+// Primary action button (consistent with design system)
+.btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: $space-3 $space-6;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: $radius-lg;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+  &--primary {
+    background: linear-gradient(135deg, $primary-600, $primary-500);
+    color: white;
+    box-shadow: 0 2px 8px rgba($primary-600, 0.4);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, $primary-700, $primary-600);
+      box-shadow: 0 4px 12px rgba($primary-600, 0.5);
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-400;
+      outline-offset: 2px;
+    }
+  }
+}
+
+.btn-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+// Result block — dark theme, consistent with cards
+.sim-result {
+  margin-top: $space-5;
+  padding: $space-5;
+  border-radius: $radius-xl;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  animation: fadeInUp 0.3s $ease-out-expo;
+}
+
+.result-amount {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: $primary-300;
+  margin-bottom: $space-3;
+  line-height: 1.2;
+}
+
+.result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+  font-size: 0.8125rem;
+  color: $neutral-400;
+
+  strong {
+    color: $neutral-200;
+    font-weight: 600;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sim-result,
+  .vehicle-btn,
+  .form-input,
+  .btn {
+    animation: none;
+    transition-duration: 0.01ms;
+  }
+}
+
+@media (max-width: 767px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
