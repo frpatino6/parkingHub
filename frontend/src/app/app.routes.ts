@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/infrastructure/auth/auth.guard';
-import { roleBasedRedirectGuard } from './core/infrastructure/auth/RoleBasedRedirect.Guard';
 import { MainLayoutComponent } from './shared/layouts/MainLayout.Component';
 
 export const routes: Routes = [
@@ -15,7 +14,7 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', canActivate: [roleBasedRedirectGuard], pathMatch: 'full' },
+      { path: '', redirectTo: 'check-in', pathMatch: 'full' },
       {
         path: 'check-in',
         loadChildren: () =>
