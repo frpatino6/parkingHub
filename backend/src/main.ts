@@ -167,7 +167,7 @@ async function bootstrap(): Promise<void> {
     createCashCutRoutes(cashCutController),
   );
   apiRouter.use('/users', adminOnly, createUserRoutes(userController));
-  apiRouter.use('/branches', adminOnly, createBranchRoutes(branchController));
+  apiRouter.use('/branches', operatorOrAdmin, createBranchRoutes(branchController, adminOnly));
   apiRouter.use(
     '/pricing-configs',
     adminOnly,

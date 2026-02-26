@@ -31,7 +31,9 @@ export class BranchController {
 
   listByTenant = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      console.log(`[BranchController] Listing branches for tenant: ${req.auth!.tenantId}`);
       const branches = await this.getBranchesByTenantUseCase.execute(req.auth!.tenantId);
+      console.log(`[BranchController] Found ${branches.length} branches`);
       res.json(branches.map((b: Branch) => ({
         id: b.id,
         name: b.name,
@@ -39,6 +41,7 @@ export class BranchController {
         active: b.active
       })));
     } catch (err) {
+      console.error('[BranchController] Error listing branches:', err);
       next(err);
     }
   };

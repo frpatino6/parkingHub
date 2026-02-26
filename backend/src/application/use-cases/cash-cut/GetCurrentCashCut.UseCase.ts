@@ -15,7 +15,7 @@ export class GetCurrentCashCutUseCase implements UseCase<GetCurrentCashCutDto, C
   async execute(dto: GetCurrentCashCutDto): Promise<CashCut> {
     const cashCut = await this.cashCutRepo.findOpenByOperator(dto.branchId, dto.operatorId);
     if (!cashCut) {
-      throw new NotFoundError('CashCut', `Open for operator ${dto.operatorId}`);
+      throw new NotFoundError('CashCut', `Open shift for operator ${dto.operatorId} in branch ${dto.branchId}`);
     }
     return cashCut;
   }

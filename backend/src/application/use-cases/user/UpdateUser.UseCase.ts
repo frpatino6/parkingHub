@@ -12,7 +12,7 @@ export interface UpdateUserDto {
   name?: string;
   role?: UserRole;
   active?: boolean;
-  branchId?: string;
+  branchIds?: string[];
 }
 
 export class UpdateUserUseCase implements UseCase<UpdateUserDto, User> {
@@ -23,10 +23,10 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDto, User> {
 
   async execute(dto: UpdateUserDto): Promise<User> {
     const user = await this.userRepo.findById(dto.userId);
-    if (!user) throw new NotFoundError(`User with ID ${dto.userId} not found`);
+    if (!user) throw new NotFoundError('User', dto.userId);
 
-    if (dto.role === UserRole.OPERATOR && (dto.branchId === undefined ? !user.branchId : !dto.branchId)) {
-      throw new ValidationError('branchId is required for OPERATOR role');
+    if (dto.role === UserRole.OPERATOR && (dto.branchIds === undefined ? user.branchIds.length === 0 : dto.branchIds.length === 0)) {
+      throw new ValidationError('At least one branchId is required for OPERATOR role');
     }
 
     // Creating updated entity (User entity is mostly immutable props in its current design, 
@@ -39,7 +39,7 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDto, User> {
       name: dto.name ?? user.name,
       role: dto.role ?? user.role,
       active: dto.active ?? user.active,
-      branchId: dto.branchId !== undefined ? dto.branchId : user.branchId,
+      branchIds: dto.branchIds !== undefined ? dto.branchIds : user.branchIds,
     });
 
     const saved = await this.userRepo.update(updatedUser);
@@ -47,8 +47,8 @@ export class UpdateUserUseCase implements UseCase<UpdateUserDto, User> {
     await this.auditLogRepo.create(
       new AuditLog({
         tenantId: saved.tenantId,
-        branchId: saved.branchId,
-        userId: saved.id!, // The admin performing the action? 
+        branchIds: saved.branchIds,
+        userId: saved.id!, 
         // Note: The UseCase doesn't receive the actor ID here, 
         // but in other use cases it's passed or stored. 
         // For simplicity with existing patterns, we'll log the target user as userId 

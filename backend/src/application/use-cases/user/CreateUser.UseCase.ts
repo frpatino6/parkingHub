@@ -17,8 +17,8 @@ export class CreateUserUseCase implements UseCase<CreateUserDto, User> {
   ) {}
 
   async execute(dto: CreateUserDto): Promise<User> {
-    if (dto.role === UserRole.OPERATOR && !dto.branchId) {
-      throw new ValidationError('branchId is required for OPERATOR role');
+    if (dto.role === UserRole.OPERATOR && (!dto.branchIds || dto.branchIds.length === 0)) {
+      throw new ValidationError('At least one branchId is required for OPERATOR role');
     }
 
     const existing = await this.userRepo.findByEmail(dto.email);
@@ -32,7 +32,7 @@ export class CreateUserUseCase implements UseCase<CreateUserDto, User> {
       email: dto.email.toLowerCase().trim(),
       passwordHash,
       role: dto.role,
-      branchId: dto.branchId,
+      branchIds: dto.branchIds || [],
       active: true,
     });
 
@@ -41,7 +41,7 @@ export class CreateUserUseCase implements UseCase<CreateUserDto, User> {
     await this.auditLogRepo.create(
       new AuditLog({
         tenantId: dto.tenantId,
-        branchId: dto.branchId,
+        branchIds: saved.branchIds,
         userId: saved.id!,
         action: AuditAction.USER_CREATED,
         entityType: 'User',

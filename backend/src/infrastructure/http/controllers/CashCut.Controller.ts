@@ -22,7 +22,7 @@ export class CashCutController {
     try {
       const cashCut = await this.getCurrentCashCutUseCase.execute({
         tenantId: req.auth!.tenantId,
-        branchId: req.auth!.branchId!,
+        branchId: req.auth!.activeBranchId!,
         operatorId: req.auth!.userId,
       });
       res.json(this.toResponse(cashCut));
@@ -35,7 +35,7 @@ export class CashCutController {
     try {
       const cashCut = await this.openCashCutUseCase.execute({
         tenantId: req.auth!.tenantId,
-        branchId: req.auth!.branchId!,
+        branchId: req.auth!.activeBranchId!,
         operatorId: req.auth!.userId,
       });
       res.status(201).json(this.toResponse(cashCut));
@@ -48,7 +48,7 @@ export class CashCutController {
     try {
       const cashCut = await this.closeCashCutUseCase.execute({
         tenantId: req.auth!.tenantId,
-        branchId: req.auth!.branchId!,
+        branchId: req.auth!.activeBranchId!,
         operatorId: req.auth!.userId,
         reportedCash: req.body.reportedCash as number,
       });
@@ -62,7 +62,7 @@ export class CashCutController {
     try {
       const movement = await this.createMovementUseCase.execute({
         tenantId: req.auth!.tenantId,
-        branchId: req.auth!.branchId!,
+        branchId: req.auth!.activeBranchId!,
         operatorId: req.auth!.userId,
         type: req.body.type,
         category: req.body.category,
@@ -90,7 +90,7 @@ export class CashCutController {
       const endDate = new Date(req.query['endDate'] as string);
       
       const movements = await this.getMovementsReportUseCase.execute({
-        branchId: req.auth!.branchId!,
+        branchId: req.auth!.activeBranchId!,
         startDate,
         endDate,
       });

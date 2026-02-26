@@ -7,6 +7,6 @@ export interface CreateUserDto {
   email: string;
   password: string;
   role: UserRole;
-  /** Required when role === OPERATOR */
-  branchId?: string;
+  /** List of permitted branch IDs. Required for OPERATOR role if they shouldn't have global access. */
+  branchIds: string[];
 }

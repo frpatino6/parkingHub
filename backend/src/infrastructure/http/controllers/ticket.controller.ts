@@ -23,7 +23,7 @@ export class TicketController {
     try {
       const result = await this.getTicketByQrUseCase.execute({
         tenantId: req.auth!.tenantId,
-        branchId: req.auth!.branchId!,
+        branchId: req.auth!.activeBranchId!,
         qrCode: req.params['qrCode'] as string,
       });
       res.json(result);
@@ -62,7 +62,7 @@ export class TicketController {
     try {
       const result = await this.checkInUseCase.execute({
         tenantId: req.auth!.tenantId,
-        branchId: req.auth!.branchId!,
+        branchId: req.auth!.activeBranchId!,
         operatorId: req.auth!.userId,
         vehicleType: req.body.vehicleType as VehicleType,
         plate: req.body.plate as string,
@@ -77,7 +77,7 @@ export class TicketController {
     try {
       const ticket = await this.checkOutUseCase.execute({
         tenantId: req.auth!.tenantId,
-        branchId: req.auth!.branchId!,
+        branchId: req.auth!.activeBranchId!,
         operatorId: req.auth!.userId,
         qrCode: req.body.qrCode as string,
         paymentMethod: req.body.paymentMethod as PaymentMethod,
@@ -92,7 +92,7 @@ export class TicketController {
     try {
       const ticket = await this.cancelTicketUseCase.execute({
         tenantId: req.auth!.tenantId,
-        branchId: req.auth!.branchId!,
+        branchId: req.auth!.activeBranchId!,
         operatorId: req.auth!.userId,
         ticketId: req.params['id'] as string,
         reason: req.body.reason as string,

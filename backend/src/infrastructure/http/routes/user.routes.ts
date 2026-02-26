@@ -9,14 +9,14 @@ const createUserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   role: z.nativeEnum(UserRole),
-  branchId: z.string().optional(),
+  branchIds: z.array(z.string()).default([]),
 });
 
 const updateUserSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   role: z.nativeEnum(UserRole).optional(),
   active: z.boolean().optional(),
-  branchId: z.string().optional(),
+  branchIds: z.array(z.string()).optional(),
 });
 
 const resetPasswordSchema = z.object({

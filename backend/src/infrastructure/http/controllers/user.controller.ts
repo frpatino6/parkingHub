@@ -22,7 +22,7 @@ export class UserController {
         email: req.body.email as string,
         password: req.body.password as string,
         role: req.body.role as UserRole,
-        branchId: req.body.branchId as string | undefined,
+        branchIds: req.body.branchIds as string[] || [],
       });
       res.status(201).json(this.toResponse(user));
     } catch (err) {
@@ -46,7 +46,7 @@ export class UserController {
         name: req.body.name as string,
         role: req.body.role as UserRole,
         active: req.body.active as boolean,
-        branchId: req.body.branchId as string,
+        branchIds: req.body.branchIds as string[],
       });
       res.json(this.toResponse(user));
     } catch (err) {
@@ -72,7 +72,7 @@ export class UserController {
       name: user.name,
       email: user.email,
       role: user.role,
-      branchId: user.branchId,
+      branchIds: user.branchIds,
       active: user.active,
     };
   }

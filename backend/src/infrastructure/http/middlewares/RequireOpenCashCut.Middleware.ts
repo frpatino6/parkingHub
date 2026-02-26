@@ -8,12 +8,12 @@ import { CashCutRepository } from '../../../domain/ports/CashCutRepository.Port.
  */
 export function requireOpenCashCut(cashCutRepo: CashCutRepository) {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    if (!req.auth?.branchId) {
+    if (!req.auth?.activeBranchId) {
       res.status(400).json({ error: 'Branch context required for this operation' });
       return;
     }
 
-    const cashCut = await cashCutRepo.findOpenByOperator(req.auth.branchId, req.auth.userId);
+    const cashCut = await cashCutRepo.findOpenByOperator(req.auth.activeBranchId, req.auth.userId);
     if (!cashCut) {
       res.status(409).json({
         error: 'Debes abrir tu caja (turno) antes de realizar operaciones de tickets.',

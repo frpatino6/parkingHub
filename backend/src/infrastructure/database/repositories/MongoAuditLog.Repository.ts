@@ -8,6 +8,7 @@ export class MongoAuditLogRepository implements AuditLogRepository {
     const doc = await AuditLogModel.create({
       tenantId: log.tenantId,
       branchId: log.branchId,
+      branchIds: log.branchIds,
       userId: log.userId,
       action: log.action,
       entityType: log.entityType,
@@ -37,6 +38,7 @@ export class MongoAuditLogRepository implements AuditLogRepository {
       id: doc.id as string,
       tenantId: doc.tenantId,
       branchId: doc.branchId,
+      branchIds: doc.branchIds,
       userId: doc.userId,
       action: doc.action,
       entityType: doc.entityType,

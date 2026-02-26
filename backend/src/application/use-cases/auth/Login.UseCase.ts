@@ -26,7 +26,7 @@ export class LoginUseCase implements UseCase<LoginDto, LoginResult> {
     const accessToken = this.tokenService.sign({
       userId: user.id!,
       tenantId: user.tenantId,
-      branchId: user.branchId,
+      branchIds: user.branchIds,
       role: user.role,
     });
 
@@ -38,7 +38,7 @@ export class LoginUseCase implements UseCase<LoginDto, LoginResult> {
         email: user.email,
         role: user.role,
         tenantId: user.tenantId,
-        branchId: user.branchId,
+        branchIds: user.branchIds,
       },
     };
   }

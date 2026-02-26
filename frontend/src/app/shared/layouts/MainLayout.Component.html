@@ -1,4 +1,8 @@
 <div class="layout-wrapper">
+  @if (!activeBranch()) {
+    <app-branch-selection />
+  }
+
   <!-- Mobile hamburger -->
   <button
     class="hamburger-btn"
@@ -18,11 +22,18 @@
 
   <aside class="sidebar" [class.open]="sidebarOpen()">
     <div class="sidebar-header">
-      <div class="logo">
+      <div class="logo-block">
         <span class="logo-text">Parking<span class="hub">Hub</span></span>
+        @if (activeBranch()) {
+          <button class="active-branch-chip" (click)="onChangeBranch()" title="Cambiar Sede">
+            <span class="chip-dot"></span>
+            <span class="chip-label">{{ activeBranch()?.name }}</span>
+            <span class="material-icons chip-icon">swap_horiz</span>
+          </button>
+        }
       </div>
       <button class="close-btn" (click)="closeSidebar()" aria-label="Cerrar menú">
-        ✕
+        <span class="material-icons">close</span>
       </button>
     </div>
 
@@ -34,6 +45,7 @@
           class="nav-link"
           (click)="closeSidebar()"
         >
+          <span class="material-icons nav-icon">{{ item.icon }}</span>
           <span class="nav-label">{{ item.label }}</span>
         </a>
       }

@@ -8,9 +8,9 @@ const createBranchSchema = z.object({
   address: z.string().min(1).max(500),
 });
 
-export function createBranchRoutes(controller: BranchController): Router {
+export function createBranchRoutes(controller: BranchController, adminOnly: any): Router {
   const router = Router();
   router.get('/', controller.listByTenant);
-  router.post('/', validate(createBranchSchema), controller.create);
+  router.post('/', adminOnly, validate(createBranchSchema), controller.create);
   return router;
 }

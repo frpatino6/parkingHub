@@ -3,6 +3,7 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { PricingService, PricingConfigResponse } from '../../../core/infrastructure/pricing/Pricing.Service';
 import { AuthService } from '../../../core/infrastructure/auth/Auth.Service';
+import { ContextService } from '../../../core/infrastructure/context/Context.Service';
 import { finalize } from 'rxjs';
 import { extractApiError } from '../../../shared/utils/api-error.util';
 
@@ -17,6 +18,7 @@ import { extractApiError } from '../../../shared/utils/api-error.util';
 export class PricingPageComponent implements OnInit {
   private readonly pricingService = inject(PricingService);
   private readonly authService = inject(AuthService);
+  private readonly context = inject(ContextService);
   private readonly fb = inject(FormBuilder);
 
   readonly configs = signal<PricingConfigResponse[]>([]);
@@ -43,7 +45,7 @@ export class PricingPageComponent implements OnInit {
   }
 
   loadPricingConfigs(): void {
-    const branchId = this.authService.user()?.branchId;
+    const branchId = this.context.activeBranchId();
     if (!branchId) return;
 
     this.isLoading.set(true);

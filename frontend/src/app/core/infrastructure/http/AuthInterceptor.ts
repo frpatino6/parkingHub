@@ -1,17 +1,27 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { ContextService } from '../context/Context.Service';
 
 const TOKEN_KEY = 'parkinghub_token';
 const USER_KEY = 'parkinghub_user';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem(TOKEN_KEY);
+  const context = inject(ContextService);
+  const activeBranchId = context.activeBranchId();
+
+  let headers = req.headers;
+  
   if (token) {
-    const cloned = req.clone({
-      setHeaders: { Authorization: `Bearer ${token}` },
-    });
-    return next(cloned);
+    headers = headers.set('Authorization', `Bearer ${token}`);
   }
-  return next(req);
+
+  if (activeBranchId) {
+    headers = headers.set('x-branch-id', activeBranchId);
+  }
+
+  const cloned = req.clone({ headers });
+  return next(cloned);
 };
 
 export function getStoredToken(): string | null {
@@ -27,16 +37,25 @@ export function clearStoredToken(): void {
   localStorage.removeItem(USER_KEY);
 }
 
-export function getStoredUser(): { id: string; name: string; email: string; role: string; tenantId: string; branchId?: string } | null {
+export interface StoredUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  tenantId: string;
+  branchIds: string[];
+}
+
+export function getStoredUser(): StoredUser | null {
   const raw = localStorage.getItem(USER_KEY);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as { id: string; name: string; email: string; role: string; tenantId: string; branchId?: string };
+    return JSON.parse(raw) as StoredUser;
   } catch {
     return null;
   }
 }
 
-export function setStoredUser(user: { id: string; name: string; email: string; role: string; tenantId: string; branchId?: string }): void {
+export function setStoredUser(user: StoredUser): void {
   localStorage.setItem(USER_KEY, JSON.stringify(user));
 }

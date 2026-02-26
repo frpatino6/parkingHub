@@ -18,7 +18,7 @@ export class BranchService {
   private readonly baseUrl = inject(API_BASE_URL);
   private readonly apiUrl = `${this.baseUrl}/branches`;
 
-  getAll(): Observable<BranchResponse[]> {
+  list(): Observable<BranchResponse[]> {
     return this.http.get<BranchResponse[]>(this.apiUrl);
   }
 }

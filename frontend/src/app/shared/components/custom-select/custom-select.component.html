@@ -26,8 +26,15 @@
           class="select-option"
           [class.selected]="isSelected(opt.value)"
           [attr.aria-selected]="isSelected(opt.value)"
-          (click)="select(opt.value)"
+          (click)="select(opt.value); $event.stopPropagation()"
         >
+          @if (multiple) {
+            <span class="checkbox-box">
+              @if (isSelected(opt.value)) {
+                <span class="material-icons check-icon">check</span>
+              }
+            </span>
+          }
           {{ opt.label }}
         </li>
       }

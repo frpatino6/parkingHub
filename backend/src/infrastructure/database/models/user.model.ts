@@ -23,7 +23,7 @@ const userSchema = new Schema<IUserDoc>(
     role: { type: String, enum: Object.values(UserRole), required: true },
     active: { type: Boolean, required: true, default: true },
   },
-  { timestamps: true },
+  { timestamps: true, strict: false },
 );
 
 export type UserDoc = HydratedDocument<IUserDoc>;

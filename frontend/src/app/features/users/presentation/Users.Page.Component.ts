@@ -37,13 +37,7 @@ export class UsersPageComponent implements OnInit {
   readonly roleOptions = ROLE_OPTIONS;
   
   readonly branchOptions = computed<SelectOption[]>(() => {
-    const options: SelectOption[] = [
-      { value: '', label: 'Acceso Global (Todas las sedes)' }
-    ];
-    return [
-      ...options,
-      ...this.branches().map(b => ({ value: b.id, label: b.name }))
-    ];
+    return this.branches().map(b => ({ value: b.id, label: b.name }));
   });
 
   form = {
@@ -51,7 +45,7 @@ export class UsersPageComponent implements OnInit {
     email: '',
     password: '',
     role: 'OPERATOR',
-    branchId: '',
+    branchIds: [] as string[],
     active: true
   };
 
@@ -61,7 +55,7 @@ export class UsersPageComponent implements OnInit {
   }
 
   loadBranches() {
-    this.branchService.getAll().subscribe({
+    this.branchService.list().subscribe({
       next: (data) => this.branches.set(data),
       error: (err) => console.error('Error loading branches:', err)
     });
@@ -80,7 +74,7 @@ export class UsersPageComponent implements OnInit {
   openCreateModal() {
     this.isEditing.set(false);
     this.selectedUser.set(null);
-    this.form = { name: '', email: '', password: '', role: 'OPERATOR', branchId: '', active: true };
+    this.form = { name: '', email: '', password: '', role: 'OPERATOR', branchIds: [], active: true };
     this.showModal.set(true);
   }
 
@@ -92,7 +86,7 @@ export class UsersPageComponent implements OnInit {
       email: user.email,
       password: '', // Hidden for editing unless reset
       role: user.role,
-      branchId: user.branchId || '',
+      branchIds: user.branchIds || [],
       active: user.active
     };
     this.showModal.set(true);
@@ -103,29 +97,43 @@ export class UsersPageComponent implements OnInit {
   }
 
   save() {
-    if (this.isEditing()) {
-      this.usersService.update(this.selectedUser()!.id, this.form)
-        .subscribe(() => {
+    this.loading.set(true);
+    this.error.set(null);
+
+    const request = this.isEditing() 
+      ? this.usersService.update(this.selectedUser()!.id, this.form)
+      : this.usersService.create(this.form);
+
+    request.pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: () => {
           this.loadUsers();
           this.closeModal();
-        });
-    } else {
-      this.usersService.create(this.form)
-        .subscribe(() => {
-          this.loadUsers();
-          this.closeModal();
-        });
-    }
+        },
+        error: (err) => {
+          this.error.set(extractApiError(err, 'Error al guardar el usuario'));
+          console.error('Save error:', err);
+        }
+      });
   }
 
   toggleActive(user: UserResponse) {
-    this.usersService.update(user.id, { ...user, active: !user.active })
-      .subscribe(() => this.loadUsers());
+    this.usersService.update(user.id, { 
+      name: user.name,
+      role: user.role,
+      active: !user.active,
+      branchIds: user.branchIds
+    }).subscribe({
+      next: () => this.loadUsers(),
+      error: (err) => this.error.set(extractApiError(err, 'Error al cambiar estado'))
+    });
   }
 
-  getBranchName(branchId?: string): string {
-    if (!branchId) return 'Acceso Global';
-    const branch = this.branches().find(b => b.id === branchId);
-    return branch ? branch.name : branchId; // Fallback to ID if not found
+  getBranchNames(branchIds?: string[]): string {
+    if (!branchIds || branchIds.length === 0) return 'Acceso Total';
+    return this.branches()
+      .filter(b => branchIds.includes(b.id))
+      .map(b => b.name)
+      .join(', ');
   }
 }

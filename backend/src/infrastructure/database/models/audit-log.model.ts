@@ -4,6 +4,7 @@ import { AuditAction } from '../../../domain/enums/audit-action.enum.js';
 interface IAuditLogDoc {
   tenantId: string;
   branchId?: string;
+  branchIds?: string[];
   userId: string;
   action: AuditAction;
   entityType: string;
@@ -17,6 +18,7 @@ const auditLogSchema = new Schema<IAuditLogDoc>(
   {
     tenantId: { type: String, required: true },
     branchId: { type: String },
+    branchIds: { type: [String] },
     userId: { type: String, required: true },
     action: { type: String, enum: Object.values(AuditAction), required: true },
     entityType: { type: String, required: true },

@@ -1,60 +1,50 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
-import { signal } from '@angular/core';
+import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../tokens/api.config';
-import { setStoredToken, setStoredUser, getStoredToken, getStoredUser, clearStoredToken } from '../http/AuthInterceptor';
+import { setStoredToken, setStoredUser, clearStoredToken, getStoredUser, StoredUser } from '../http/AuthInterceptor';
+import { ContextService } from '../context/Context.Service';
 
-export interface LoginRequest {
+export interface User {
+  id: string;
+  name: string;
   email: string;
-  password: string;
+  role: string;
+  tenantId: string;
+  branchIds: string[];
 }
 
-export interface LoginResult {
-  accessToken: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    tenantId: string;
-    branchId?: string;
-  };
-}
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly context = inject(ContextService);
 
-  private readonly _user = signal<LoginResult['user'] | null>(this.restoreUser());
+  private readonly _user = signal<User | null>(getStoredUser() as unknown as User);
   readonly user = this._user.asReadonly();
 
-  private restoreUser(): LoginResult['user'] | null {
-    const token = getStoredToken();
-    const stored = getStoredUser();
-    return token && stored ? stored : null;
-  }
-
-  login(request: LoginRequest): Observable<LoginResult> {
-    return this.http
-      .post<LoginResult>(`${this.baseUrl}/auth/login`, request)
-      .pipe(
-        tap((res) => {
-          setStoredToken(res.accessToken);
-          setStoredUser(res.user);
-          this._user.set(res.user);
-        }),
-      );
+  login(credentials: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/auth/login`, credentials).pipe(
+      tap((res) => {
+        setStoredToken(res.accessToken);
+        setStoredUser(res.user);
+        this._user.set(res.user);
+        // Clear active branch so user must select sede (or auto-select if only one)
+        this.context.setActiveBranch(null);
+      }),
+    );
   }
 
   logout(): void {
     clearStoredToken();
+    this.context.setActiveBranch(null);
     this._user.set(null);
   }
 
-  hasRole(allowedRoles: string[]): boolean {
-    const user = this.user();
-    return user ? allowedRoles.includes(user.role) : false;
+  hasRole(role: string): boolean {
+    return this._user()?.role === role;
   }
 }

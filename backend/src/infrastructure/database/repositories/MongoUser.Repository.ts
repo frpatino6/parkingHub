@@ -25,7 +25,7 @@ export class MongoUserRepository implements UserRepository {
   async create(user: User): Promise<User> {
     const doc = await UserModel.create({
       tenantId: user.tenantId,
-      branchId: user.branchId,
+      branchIds: user.branchIds,
       name: user.name,
       email: user.email,
       passwordHash: user.passwordHash,
@@ -39,11 +39,14 @@ export class MongoUserRepository implements UserRepository {
     const doc = await UserModel.findByIdAndUpdate(
       user.id,
       { 
-        name: user.name, 
-        active: user.active, 
-        branchId: user.branchId,
-        role: user.role,
-        passwordHash: user.passwordHash 
+        $set: {
+          name: user.name, 
+          active: user.active, 
+          branchIds: user.branchIds,
+          role: user.role,
+          passwordHash: user.passwordHash 
+        },
+        $unset: { branchId: "" } // Clean up legacy field
       },
       { new: true },
     );
@@ -52,10 +55,17 @@ export class MongoUserRepository implements UserRepository {
   }
 
   private toDomain(doc: UserDoc): User {
+    // Accessing raw data specifically for migration because schema now ignores branchId
+    const rawDoc = doc.toObject() as any;
+    let branchIds = rawDoc.branchIds || [];
+    if (branchIds.length === 0 && rawDoc.branchId) {
+      branchIds = [rawDoc.branchId];
+    }
+
     return new User({
       id: doc.id as string,
       tenantId: doc.tenantId,
-      branchId: doc.branchId,
+      branchIds,
       name: doc.name,
       email: doc.email,
       passwordHash: doc.passwordHash,

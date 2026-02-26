@@ -4,6 +4,7 @@ export interface AuditLogProps {
   id?: string;
   tenantId: string;
   branchId?: string;
+  branchIds?: string[];
   userId: string;
   action: AuditAction;
   entityType: string;
@@ -31,6 +32,7 @@ export class AuditLog {
   get id(): string | undefined { return this._id; }
   get tenantId(): string { return this._props.tenantId; }
   get branchId(): string | undefined { return this._props.branchId; }
+  get branchIds(): string[] | undefined { return this._props.branchIds; }
   get userId(): string { return this._props.userId; }
   get action(): AuditAction { return this._props.action; }
   get entityType(): string { return this._props.entityType; }

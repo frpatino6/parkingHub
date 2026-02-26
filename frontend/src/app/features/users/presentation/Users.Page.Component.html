@@ -54,7 +54,7 @@
                 </td>
                 <td>
                   <span class="branch-text">
-                    {{ getBranchName(user.branchId) }}
+                    {{ getBranchNames(user.branchIds) }}
                   </span>
                 </td>
                 <td>
@@ -122,11 +122,12 @@
             </div>
 
             <div class="form-group">
-              <label>Sede</label>
+              <label>Sedes Permitidas</label>
               <app-custom-select
                 [options]="branchOptions()"
-                [(ngModel)]="form.branchId"
-                name="branchId"
+                [(ngModel)]="form.branchIds"
+                name="branchIds"
+                [multiple]="true"
               ></app-custom-select>
             </div>
           </div>

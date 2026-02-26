@@ -3,8 +3,8 @@ import { UserRole } from '../enums/user-role.enum.js';
 export interface UserProps {
   id?: string;
   tenantId: string;
-  /** OPERATOR is assigned to a specific branch; PARKING_ADMIN can access all branches of the tenant */
-  branchId?: string;
+  /** List of permitted branch IDs. Empty array means access to ALL branches. */
+  branchIds: string[];
   name: string;
   email: string;
   passwordHash: string;
@@ -29,7 +29,7 @@ export class User {
 
   get id(): string | undefined { return this._id; }
   get tenantId(): string { return this._props.tenantId; }
-  get branchId(): string | undefined { return this._props.branchId; }
+  get branchIds(): string[] { return this._props.branchIds; }
   get name(): string { return this._props.name; }
   get email(): string { return this._props.email; }
   get passwordHash(): string { return this._props.passwordHash; }

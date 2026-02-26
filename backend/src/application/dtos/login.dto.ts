@@ -13,6 +13,6 @@ export interface LoginResult {
     email: string;
     role: UserRole;
     tenantId: string;
-    branchId?: string;
+    branchIds: string[];
   };
 }

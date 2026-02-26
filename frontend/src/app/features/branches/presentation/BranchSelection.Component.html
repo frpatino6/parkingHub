@@ -1,0 +1,36 @@
+<div class="selection-overlay">
+  <div class="selection-card">
+    <header class="selection-header">
+      <h2 class="selection-title">Selecciona una Sede</h2>
+      <p class="selection-subtitle">¿En cuál sede trabajarás hoy?</p>
+    </header>
+
+    @if (loading()) {
+      <div class="state-loading">
+        <span class="spinner"></span>
+        <span>Cargando sedes...</span>
+      </div>
+    } @else {
+      <div class="branch-grid">
+        @for (branch of allowedBranches(); track branch.id) {
+          <button type="button" class="branch-card" (click)="selectBranch(branch)">
+            <span class="branch-icon">
+              <span class="material-icons">location_city</span>
+            </span>
+            <div class="branch-info">
+              <span class="branch-name">{{ branch.name }}</span>
+              <span class="branch-address">{{ branch.address || 'Sin dirección' }}</span>
+            </div>
+            <span class="material-icons branch-chevron">arrow_forward</span>
+          </button>
+        }
+      </div>
+    }
+
+    <footer class="selection-footer">
+      <button type="button" class="btn-logout" (click)="onLogout()">
+        Cerrar Sesión
+      </button>
+    </footer>
+  </div>
+</div>

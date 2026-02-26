@@ -125,4 +125,28 @@
     background: rgba($primary-500, 0.35);
     color: $primary-200;
   }
+
+  .checkbox-box {
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba($neutral-400, 0.5);
+    border-radius: $radius-sm;
+    margin-right: $space-3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($neutral-900, 0.2);
+    transition: all 0.2s;
+
+    .select-option.selected & {
+      background: $primary-500;
+      border-color: $primary-500;
+    }
+  }
+
+  .check-icon {
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+  }
 }

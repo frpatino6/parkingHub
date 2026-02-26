@@ -8,7 +8,7 @@ export interface UserResponse {
   name: string;
   email: string;
   role: string;
-  branchId?: string;
+  branchIds: string[];
   active: boolean;
 }
 
