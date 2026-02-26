@@ -586,6 +586,15 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 
 // ────────────────────────────────────────────────────
+// Responsive
+// ────────────────────────────────────────────────────
+@media (max-width: 767px) {
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ────────────────────────────────────────────────────
 // Accessibility
 // ────────────────────────────────────────────────────
 @media (prefers-reduced-motion: reduce) {

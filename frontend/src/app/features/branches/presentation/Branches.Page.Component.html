@@ -1,0 +1,116 @@
+<div class="branches-container">
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Sedes</h1>
+      <p class="subtitle">Administra las sedes del parqueadero</p>
+    </div>
+    <button class="btn btn--primary" (click)="openCreateModal()">
+      <span class="material-icons">add_business</span>
+      <span>Nueva Sede</span>
+    </button>
+  </header>
+
+  <main class="content-area">
+    @if (loading()) {
+      <div class="state-container loading">
+        <div class="spinner"></div>
+        <p>Cargando sedes...</p>
+      </div>
+    } @else if (error() && branches().length === 0) {
+      <div class="state-container error">
+        <span class="material-icons icon">error_outline</span>
+        <h3>Error</h3>
+        <p>{{ error() }}</p>
+        <button class="btn btn--ghost" (click)="loadBranches()">Reintentar</button>
+      </div>
+    } @else if (branches().length === 0) {
+      <div class="state-container empty">
+        <span class="material-icons icon">store</span>
+        <h3>Sin Sedes</h3>
+        <p>No hay sedes registradas. Crea la primera.</p>
+      </div>
+    } @else {
+      <div class="branches-grid">
+        @for (branch of branches(); track branch.id) {
+          <div class="glass-card branch-card" [class.inactive]="!branch.active">
+            <div class="branch-header">
+              <div class="branch-icon">
+                <span class="material-icons">store</span>
+              </div>
+              <span class="status-badge" [class.active]="branch.active" [class.inactive]="!branch.active">
+                {{ branch.active ? 'Activa' : 'Inactiva' }}
+              </span>
+            </div>
+            <h3 class="branch-name">{{ branch.name }}</h3>
+            <p class="branch-address">
+              <span class="material-icons">location_on</span>
+              {{ branch.address }}
+            </p>
+            @if (branch.totalSpots) {
+              <p class="branch-spots">
+                <span class="material-icons">local_parking</span>
+                {{ branch.totalSpots }} cupos totales
+              </p>
+            }
+            <div class="branch-actions">
+              <button class="btn btn--sm btn--ghost" (click)="openEditModal(branch)">
+                <span class="material-icons">edit</span>
+                Editar
+              </button>
+              <button class="btn btn--sm btn--ghost" [class.btn--danger]="branch.active" (click)="toggleActive(branch)">
+                <span class="material-icons">{{ branch.active ? 'toggle_off' : 'toggle_on' }}</span>
+                {{ branch.active ? 'Desactivar' : 'Activar' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content glass-card" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+          <h2>{{ isEditing() ? 'Editar Sede' : 'Nueva Sede' }}</h2>
+          <button class="btn-close" (click)="closeModal()">
+            <span class="material-icons">close</span>
+          </button>
+        </header>
+
+        @if (error()) {
+          <div class="form-error">{{ error() }}</div>
+        }
+
+        <form class="branch-form" (ngSubmit)="save()">
+          <div class="form-group">
+            <label for="branch-name">Nombre</label>
+            <input id="branch-name" type="text" class="form-input" [(ngModel)]="form.name" name="name" required placeholder="Ej: Sede Norte">
+          </div>
+          <div class="form-group">
+            <label for="branch-address">Dirección</label>
+            <input id="branch-address" type="text" class="form-input" [(ngModel)]="form.address" name="address" required placeholder="Ej: Calle 45 #23-10">
+          </div>
+          <div class="form-group">
+            <label for="branch-totalSpots">Cupos Totales (opcional)</label>
+            <input id="branch-totalSpots" type="number" class="form-input" [(ngModel)]="form.totalSpots" name="totalSpots" min="1" placeholder="Ej: 100">
+          </div>
+          @if (isEditing()) {
+            <div class="form-group form-check">
+              <label>
+                <input type="checkbox" [(ngModel)]="form.active" name="active" aria-label="Sede activa">
+                Sede activa
+              </label>
+            </div>
+          }
+          <footer class="form-actions">
+            <button type="button" class="btn btn--ghost" (click)="closeModal()">Cancelar</button>
+            <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+              {{ submitting() ? 'Guardando...' : (isEditing() ? 'Guardar Cambios' : 'Crear Sede') }}
+            </button>
+          </footer>
+        </form>
+      </div>
+    </div>
+  }
+</div>

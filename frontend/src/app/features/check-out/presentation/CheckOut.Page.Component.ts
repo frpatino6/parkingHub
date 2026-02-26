@@ -1,15 +1,16 @@
-import { Component, inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { CheckOutBloc } from '../application/CheckOut.Bloc';
 import { PaymentMethod } from '../../../core/domain/enums/PaymentMethod.enum';
+import { QrScannerComponent } from '../../../shared/components/qr-scanner/qr-scanner.component';
 
 @Component({
   selector: 'app-check-out-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CurrencyPipe, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, CurrencyPipe, RouterLink, QrScannerComponent],
   providers: [CheckOutBloc],
   templateUrl: './CheckOut.Page.Component.html',
   styleUrl: './CheckOut.Page.Component.scss',
@@ -21,6 +22,7 @@ export class CheckOutPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   readonly PaymentMethod = PaymentMethod;
+  readonly scannerOpen = signal(false);
 
   ngOnInit(): void {
     const qr = this.route.snapshot.queryParamMap.get('qr');
@@ -46,9 +48,16 @@ export class CheckOutPageComponent implements OnInit {
     this.bloc.confirmCheckOut(method);
   }
 
+  onQrScanned(code: string): void {
+    this.scannerOpen.set(false);
+    this.searchForm.patchValue({ qrCode: code });
+    this.bloc.searchTicket(code);
+  }
+
   onReset(): void {
     this.bloc.reset();
     this.searchForm.reset();
+    this.scannerOpen.set(false);
   }
 
   formatDate(iso: string): string {

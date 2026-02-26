@@ -51,4 +51,8 @@ export class User {
     this._props.active = false;
     this._props.updatedAt = new Date();
   }
+
+  withPasswordHash(newHash: string): User {
+    return new User({ ...this._props, id: this._id, passwordHash: newHash, updatedAt: new Date() });
+  }
 }

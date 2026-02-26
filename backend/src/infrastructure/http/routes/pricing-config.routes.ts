@@ -15,10 +15,26 @@ const createPricingConfigSchema = z.object({
   blockSizeMinutes: z.number().int().positive().optional(),
 });
 
+const updatePricingConfigSchema = z.object({
+  mode: z.nativeEnum(PricingMode).optional(),
+  ratePerUnit: z.number().int().nonnegative().optional(),
+  gracePeriodMinutes: z.number().int().nonnegative().optional(),
+  dayMaxRate: z.number().int().nonnegative().optional(),
+  blockSizeMinutes: z.number().int().positive().optional(),
+  active: z.boolean().optional(),
+});
+
+const simulatePriceSchema = z.object({
+  branchId: z.string().min(1),
+  vehicleType: z.nativeEnum(VehicleType),
+  durationMinutes: z.number().int().positive(),
+});
+
 export function createPricingConfigRoutes(controller: PricingConfigController): Router {
   const router = Router();
   router.get('/', controller.listByBranch);
+  router.post('/simulate', validate(simulatePriceSchema), controller.simulate);
   router.post('/', validate(createPricingConfigSchema), controller.create);
-  router.patch('/:id', controller.update);
+  router.patch('/:id', validate(updatePricingConfigSchema), controller.update);
   return router;
 }

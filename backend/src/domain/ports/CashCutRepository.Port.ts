@@ -8,4 +8,5 @@ export interface CashCutRepository {
   findByBranch(branchId: string, status?: CashCutStatus): Promise<CashCut[]>;
   create(cashCut: CashCut): Promise<CashCut>;
   update(cashCut: CashCut): Promise<CashCut>;
+  findByBranchAndDateRange(branchId: string, from: Date, to: Date): Promise<CashCut[]>;
 }

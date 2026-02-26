@@ -21,6 +21,7 @@ export class MongoBranchRepository implements BranchRepository {
       name: branch.name,
       address: branch.address,
       active: branch.active,
+      totalSpots: branch.totalSpots,
     });
     return this.toDomain(doc);
   }
@@ -28,7 +29,7 @@ export class MongoBranchRepository implements BranchRepository {
   async update(branch: Branch): Promise<Branch> {
     const doc = await BranchModel.findByIdAndUpdate(
       branch.id,
-      { name: branch.name, address: branch.address, active: branch.active },
+      { name: branch.name, address: branch.address, active: branch.active, totalSpots: branch.totalSpots },
       { new: true },
     );
     if (!doc) throw new Error(`Branch ${branch.id} not found for update`);
@@ -42,6 +43,7 @@ export class MongoBranchRepository implements BranchRepository {
       name: doc.name,
       address: doc.address,
       active: doc.active,
+      totalSpots: doc.totalSpots,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     });

@@ -7,6 +7,7 @@ export interface LoginDto {
 
 export interface LoginResult {
   accessToken: string;
+  refreshToken: string;
   user: {
     id: string;
     name: string;

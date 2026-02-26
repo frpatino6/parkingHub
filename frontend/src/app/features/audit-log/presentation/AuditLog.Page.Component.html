@@ -1,0 +1,135 @@
+<div class="audit-container">
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Auditoría</h1>
+      <p class="subtitle">Registro de todas las acciones del sistema</p>
+    </div>
+  </header>
+
+  <div class="filters-bar">
+    @if (actionDropdownOpen()) {
+      <div class="multiselect-backdrop" (click)="closeActionDropdown()" aria-hidden="true"></div>
+    }
+    <div class="filter-group action-multiselect-wrap">
+      <label id="action-filter-label">Filtrar por acción</label>
+      <div class="multiselect-trigger">
+        <button
+          type="button"
+          class="multiselect-btn"
+          [attr.aria-expanded]="actionDropdownOpen()"
+          aria-haspopup="listbox"
+          aria-labelledby="action-filter-label"
+          (click)="toggleActionDropdown()"
+        >
+          <span class="multiselect-label">
+            @if (filterActions().length === 0) {
+              Todas las acciones
+            } @else {
+              {{ filterActions().length }} {{ filterActions().length === 1 ? 'acción' : 'acciones' }} seleccionada(s)
+            }
+          </span>
+          <span class="material-icons multiselect-chevron">expand_more</span>
+        </button>
+        @if (actionDropdownOpen()) {
+          <div class="multiselect-panel" role="listbox" aria-multiselectable="true">
+            @for (opt of actionOptions; track opt.value) {
+              <label class="multiselect-option">
+                <input
+                  type="checkbox"
+                  [checked]="isActionSelected(opt.value)"
+                  (change)="toggleAction(opt.value)"
+                >
+                <span>{{ opt.label }}</span>
+              </label>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div class="filter-group">
+      <label for="audit-start-date">Desde</label>
+      <input
+        id="audit-start-date"
+        type="date"
+        class="form-input"
+        [ngModel]="startDate()"
+        (ngModelChange)="startDate.set($event)"
+      >
+    </div>
+    <div class="filter-group">
+      <label for="audit-end-date">Hasta</label>
+      <input
+        id="audit-end-date"
+        type="date"
+        class="form-input"
+        [ngModel]="endDate()"
+        (ngModelChange)="endDate.set($event)"
+      >
+    </div>
+    <button type="button" class="btn btn--primary" (click)="onFilter()" [disabled]="loading()">
+      <span class="material-icons">search</span>
+      Filtrar
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="state-container loading">
+      <div class="spinner"></div>
+      <p>Cargando registros...</p>
+    </div>
+  } @else if (error()) {
+    <div class="state-container error">
+      <span class="material-icons icon">error_outline</span>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (logs().length === 0) {
+    <div class="state-container empty">
+      <span class="material-icons icon">policy</span>
+      <h3>Sin registros</h3>
+      <p>No hay entradas de auditoría con el filtro actual.</p>
+    </div>
+  } @else {
+    <div class="glass-card table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Acción</th>
+            <th>Entidad</th>
+            <th>Usuario</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (log of logs(); track log.id) {
+            <tr class="table-row">
+              <td>
+                <span class="action-badge" [class]="badgeClass(log.action)">
+                  {{ actionLabel(log.action) }}
+                </span>
+              </td>
+              <td class="entity-col">
+                <span class="entity-type">{{ log.entityType }}</span>
+                <span class="entity-id">{{ log.entityId.slice(-8) }}</span>
+              </td>
+              <td class="user-col">
+                <span class="user-name">{{ log.userName ?? log.userId.slice(-8) }}</span>
+              </td>
+              <td class="date-col">
+                {{ log.createdAt ? (log.createdAt | date:'dd/MM/yy HH:mm') : '-' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalItems() > pageSize()) {
+      <app-pagination
+        [totalItems]="totalItems()"
+        [pageSize]="pageSize()"
+        [currentPage]="currentPage()"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</div>

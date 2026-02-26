@@ -23,6 +23,10 @@ export class UpdatePricingConfigUseCase {
       throw new ValidationError(`Pricing config with ID ${dto.id} not found`);
     }
 
+    const normalizedDayMaxRate = dto.dayMaxRate !== undefined
+      ? (dto.dayMaxRate > 0 ? new Money(dto.dayMaxRate) : undefined)
+      : existing.dayMaxRate;
+
     const updated = new PricingConfig({
       id: existing.id,
       tenantId: existing.tenantId,
@@ -31,7 +35,7 @@ export class UpdatePricingConfigUseCase {
       mode: dto.mode ?? existing.mode,
       ratePerUnit: dto.ratePerUnit !== undefined ? new Money(dto.ratePerUnit) : existing.ratePerUnit,
       gracePeriodMinutes: dto.gracePeriodMinutes ?? existing.gracePeriodMinutes,
-      dayMaxRate: dto.dayMaxRate !== undefined ? new Money(dto.dayMaxRate) : existing.dayMaxRate,
+      dayMaxRate: normalizedDayMaxRate,
       blockSizeMinutes: dto.blockSizeMinutes ?? existing.blockSizeMinutes,
       active: dto.active ?? existing.active,
     });

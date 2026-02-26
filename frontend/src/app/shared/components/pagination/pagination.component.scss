@@ -1,0 +1,53 @@
+@use '../../../../styles/variables' as *;
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: $space-4 0;
+}
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 $space-2;
+  border-radius: $radius-md;
+  border: 1px solid rgba($neutral-700, 0.5);
+  background: rgba($surface-dark-card, 0.4);
+  color: $neutral-300;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled):not(.active) {
+    background: rgba($primary-700, 0.3);
+    border-color: rgba($primary-500, 0.4);
+    color: $primary-300;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, $primary-600, $primary-500);
+    border-color: $primary-500;
+    color: white;
+    box-shadow: 0 2px 8px rgba($primary-600, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  &--nav {
+    .material-icons { font-size: 1.25rem; }
+  }
+}
+
+.page-ellipsis {
+  color: $neutral-500;
+  padding: 0 $space-1;
+}

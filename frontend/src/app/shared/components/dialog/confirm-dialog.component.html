@@ -1,0 +1,26 @@
+@if (dialog.config(); as cfg) {
+  <div class="dialog-backdrop" (click)="dialog.resolve(false)" role="presentation">
+    <div
+      class="dialog-panel glass-card"
+      role="alertdialog"
+      [attr.aria-label]="cfg.title"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="dialog-title">{{ cfg.title }}</h2>
+      <p class="dialog-message">{{ cfg.message }}</p>
+      <div class="dialog-actions">
+        <button class="btn btn--ghost" (click)="dialog.resolve(false)">
+          {{ cfg.cancelLabel ?? 'Cancelar' }}
+        </button>
+        <button
+          class="btn"
+          [class.btn--primary]="!cfg.danger"
+          [class.btn--danger]="cfg.danger"
+          (click)="dialog.resolve(true)"
+        >
+          {{ cfg.confirmLabel ?? 'Confirmar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

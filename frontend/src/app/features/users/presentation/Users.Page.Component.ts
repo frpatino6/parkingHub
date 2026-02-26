@@ -1,10 +1,11 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsersService, UserResponse } from '../../../core/infrastructure/users/Users.Service';
 import { BranchService, BranchResponse } from '../../../core/infrastructure/branches/Branch.Service';
 import { extractApiError } from '../../../shared/utils/api-error.util';
 import { CustomSelectComponent, SelectOption } from '../../../shared/components/custom-select/custom-select.component';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { finalize } from 'rxjs';
 
 const ROLE_OPTIONS: SelectOption[] = [
@@ -16,9 +17,10 @@ const ROLE_OPTIONS: SelectOption[] = [
 @Component({
   selector: 'app-users-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, CustomSelectComponent],
+  imports: [CommonModule, FormsModule, CustomSelectComponent, PaginationComponent],
   templateUrl: './Users.Page.Component.html',
-  styleUrl: './Users.Page.Component.scss'
+  styleUrl: './Users.Page.Component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersPageComponent implements OnInit {
   private readonly usersService = inject(UsersService);
@@ -28,6 +30,9 @@ export class UsersPageComponent implements OnInit {
   branches = signal<BranchResponse[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+  currentPage = signal(1);
+  pageSize = signal(20);
+  totalItems = signal(0);
 
   // Modal / Form state
   showModal = signal(false);
@@ -63,12 +68,20 @@ export class UsersPageComponent implements OnInit {
 
   loadUsers() {
     this.loading.set(true);
-    this.usersService.getAll()
+    this.usersService.getPaginated(this.currentPage(), this.pageSize())
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: (data) => this.users.set(data),
+        next: (data) => {
+          this.users.set(data.items);
+          this.totalItems.set(data.total);
+        },
         error: (err) => this.error.set(extractApiError(err, 'Error cargando usuarios'))
       });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
+    this.loadUsers();
   }
 
   openCreateModal() {

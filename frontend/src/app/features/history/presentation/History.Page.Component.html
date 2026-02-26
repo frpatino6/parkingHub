@@ -34,22 +34,25 @@
           <label for="plateSearch">Buscar por Placa</label>
           <div class="input-wrapper">
             <span class="material-icons">search</span>
-            <input 
-              type="text" 
-              id="plateSearch" 
-              placeholder="Ingrese placa..." 
-              [ngModel]="searchPlate()" 
+            <input
+              type="text"
+              id="plateSearch"
+              placeholder="Ingrese placa..."
+              [ngModel]="searchPlate()"
               (ngModelChange)="searchPlate.set($event)"
-              (keyup.enter)="loadHistory()"
+              (keyup.enter)="onSearch()"
               class="form-input"
             >
           </div>
         </div>
-        
-        <div class="filter-actions" style="display: flex; align-items: flex-end;">
-          <button class="btn btn--primary" (click)="loadHistory()" [disabled]="loading()">
+
+        <div class="filter-actions" style="display: flex; align-items: flex-end; gap: 8px;">
+          <button class="btn btn--primary" (click)="onSearch()" [disabled]="loading()">
             <span class="material-icons">search</span>
             <span>Buscar</span>
+          </button>
+          <button class="btn btn--ghost" (click)="onExport()" title="Exportar CSV">
+            <span class="material-icons">download</span>
           </button>
         </div>
       </div>
@@ -150,6 +153,15 @@
             </tbody>
           </table>
         </div>
+
+        @if (totalItems() > pageSize() && !searchPlate()) {
+          <app-pagination
+            [totalItems]="totalItems()"
+            [pageSize]="pageSize()"
+            [currentPage]="currentPage()"
+            (pageChange)="onPageChange($event)"
+          />
+        }
       }
     } @else {
       <app-financial-report />

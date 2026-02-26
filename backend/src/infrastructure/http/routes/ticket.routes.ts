@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { TicketController } from '../controllers/ticket.controller.js';
+import { TicketController } from '../controllers/Ticket.Controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { VehicleType } from '../../../domain/enums/vehicle-type.enum.js';
 import { PaymentMethod } from '../../../domain/enums/payment-method.enum.js';
@@ -25,7 +25,9 @@ export function createTicketRoutes(controller: TicketController): Router {
   router.get('/qr/:qrCode', controller.getByQr);
   // GET /api/tickets/active     → get all active tickets for current branch
   router.get('/active', controller.getActive);
-  // GET /api/tickets?plate=XYZ → search history
+  // GET /api/tickets/history?page=1&limit=20 → paginated history
+  router.get('/history', controller.getHistoryPaginated);
+  // GET /api/tickets?plate=XYZ → search by plate
   router.get('/', controller.getHistory);
   // POST /api/tickets          → check-in
   router.post('/', validate(checkInSchema), controller.checkIn);

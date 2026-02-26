@@ -23,6 +23,12 @@
         <p>{{ error() }}</p>
         <button class="btn btn--ghost" (click)="loadUsers()">Reintentar</button>
       </div>
+    } @else if (users().length === 0) {
+      <div class="state-container empty">
+        <span class="material-icons icon">people</span>
+        <h3>Sin usuarios</h3>
+        <p>No hay usuarios registrados.</p>
+      </div>
     } @else {
       <div class="glass-card table-wrapper">
         <table class="data-table">
@@ -78,6 +84,15 @@
           </tbody>
         </table>
       </div>
+
+      @if (totalItems() > pageSize()) {
+        <app-pagination
+          [totalItems]="totalItems()"
+          [pageSize]="pageSize()"
+          [currentPage]="currentPage()"
+          (pageChange)="onPageChange($event)"
+        />
+      }
     }
   </main>
 

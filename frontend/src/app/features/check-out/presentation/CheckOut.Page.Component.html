@@ -35,6 +35,14 @@
                 autocomplete="off"
               />
               <button
+                type="button"
+                class="btn btn--ghost"
+                (click)="scannerOpen.set(!scannerOpen())"
+                title="Escanear con cámara"
+              >
+                <span class="material-icons">qr_code_scanner</span>
+              </button>
+              <button
                 type="submit"
                 class="btn btn--primary"
                 [disabled]="searchForm.invalid || bloc.isSearching()"
@@ -47,6 +55,15 @@
               </button>
             </div>
           </div>
+
+          @if (scannerOpen()) {
+            <div class="scanner-section">
+              <app-qr-scanner
+                (scanned)="onQrScanned($event)"
+                (scanError)="scannerOpen.set(false)"
+              />
+            </div>
+          }
         </form>
       }
 

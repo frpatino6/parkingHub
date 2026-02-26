@@ -14,6 +14,23 @@ export interface PricingConfigResponse {
   active: boolean;
 }
 
+export interface SimulatePriceRequest {
+  branchId: string;
+  vehicleType: string;
+  durationMinutes: number;
+}
+
+export interface SimulatePriceResult {
+  amountCOP: number;
+  billableMinutes: number;
+  mode: string;
+  vehicleType: string;
+  gracePeriodMinutes: number;
+  ratePerUnit: number;
+  dayMaxRate?: number;
+  blockSizeMinutes?: number;
+}
+
 export interface UpdatePricingConfigRequest {
   mode?: 'MINUTE' | 'FRACTION' | 'BLOCK';
   ratePerUnit?: number;
@@ -39,5 +56,9 @@ export class PricingService {
 
   update(id: string, request: UpdatePricingConfigRequest): Observable<PricingConfigResponse> {
     return this.http.patch<PricingConfigResponse>(`${this.apiUrl}/${id}`, request);
+  }
+
+  simulate(request: SimulatePriceRequest): Observable<SimulatePriceResult> {
+    return this.http.post<SimulatePriceResult>(`${this.apiUrl}/simulate`, request);
   }
 }
