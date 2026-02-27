@@ -89,7 +89,7 @@ export class PricingPageComponent implements OnInit {
       mode: formValue.mode,
       ratePerUnit: formValue.ratePerUnit,
       gracePeriodMinutes: formValue.gracePeriodMinutes,
-      dayMaxRate: formValue.hasDayMaxRate ? formValue.dayMaxRate : undefined,
+      dayMaxRate: formValue.hasDayMaxRate ? formValue.dayMaxRate : 0,
       blockSizeMinutes: formValue.blockSizeMinutes,
       active: formValue.active,
     };

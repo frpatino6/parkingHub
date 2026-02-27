@@ -42,18 +42,19 @@ export class MongoPricingConfigRepository implements PricingConfigRepository {
   }
 
   async update(config: PricingConfig): Promise<PricingConfig> {
-    const doc = await PricingConfigModel.findByIdAndUpdate(
-      config.id,
-      {
-        mode: config.mode,
-        ratePerUnitCOP: config.ratePerUnit.amount,
-        gracePeriodMinutes: config.gracePeriodMinutes,
-        dayMaxRateCOP: config.dayMaxRate?.amount,
-        blockSizeMinutes: config.blockSizeMinutes,
-        active: config.active,
-      },
-      { new: true },
-    );
+    const setFields = {
+      mode: config.mode,
+      ratePerUnitCOP: config.ratePerUnit.amount,
+      gracePeriodMinutes: config.gracePeriodMinutes,
+      blockSizeMinutes: config.blockSizeMinutes,
+      active: config.active,
+    };
+
+    const updateOp = config.dayMaxRate !== undefined
+      ? { $set: { ...setFields, dayMaxRateCOP: config.dayMaxRate.amount } }
+      : { $set: setFields, $unset: { dayMaxRateCOP: '' } };
+
+    const doc = await PricingConfigModel.findByIdAndUpdate(config.id, updateOp, { new: true });
     if (!doc) throw new Error(`PricingConfig ${config.id} not found for update`);
     return this.toDomain(doc);
   }
